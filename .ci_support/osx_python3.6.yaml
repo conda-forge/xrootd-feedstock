@@ -1,0 +1,48 @@
+MACOSX_DEPLOYMENT_TARGET:
+- '10.9'
+c_compiler:
+- clang
+channel_sources:
+- conda-forge/label/gcc7,defaults
+channel_targets:
+- conda-forge gcc7
+curl:
+- '7.59'
+cxx_compiler:
+- clangxx
+krb5:
+- '1.16'
+libxml2:
+- '2.9'
+macos_machine:
+- x86_64-apple-darwin13.4.0
+macos_min_version:
+- '10.9'
+ncurses:
+- '6.1'
+openssl:
+- 1.0.2
+pin_run_as_build:
+  curl:
+    max_pin: x
+  krb5:
+    max_pin: x.x
+  libxml2:
+    max_pin: x.x
+  ncurses:
+    max_pin: x.x
+  openssl:
+    max_pin: x.x.x
+  python:
+    min_pin: x.x
+    max_pin: x.x
+  readline:
+    max_pin: x
+  zlib:
+    max_pin: x.x
+python:
+- '3.6'
+readline:
+- '7.0'
+zlib:
+- '1.2'
