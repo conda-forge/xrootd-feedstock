@@ -13,11 +13,11 @@ source:
     - patches/fix_clock_gettime-2.patch  # [osx]
 
 build:
-  number: 1001
+  number: 1002
   skip: True  # [win]
   run_exports:
-    strong:
-      - xrootd
+    # https://abi-laboratory.pro/tracker/timeline/xrootd/
+    - {{ pin_subpackage('xrootd', max_pin='x.x.x') }}
 
 requirements:
   build:
