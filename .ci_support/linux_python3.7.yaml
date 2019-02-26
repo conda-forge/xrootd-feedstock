@@ -5,7 +5,7 @@ channel_sources:
 channel_targets:
 - conda-forge main
 curl:
-- '7.59'
+- '7.64'
 cxx_compiler:
 - gxx
 docker_image:
@@ -17,7 +17,7 @@ libxml2:
 ncurses:
 - '6.1'
 openssl:
-- 1.0.2
+- 1.1.1a
 pin_run_as_build:
   curl:
     max_pin: x
