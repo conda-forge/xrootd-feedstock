@@ -7,9 +7,9 @@ cd build-dir
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdpfc_print)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdFileCache.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdadler32)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdmapc)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
+perl -0pi -e 's/(target_link_libraries\([\s]+xrdqstats)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdfs)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdCl/CMakeLists.txt
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdcp)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdCl/CMakeLists.txt
-perl -0pi -e 's/(target_link_libraries\([\s]+xrdqstats)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdCl/CMakeLists.txt
 
 
 if [ "$(uname)" == "Linux" ]; then
