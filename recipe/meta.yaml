@@ -1,5 +1,5 @@
 {% set name = "xrootd" %}
-{% set version = "4.9.0" %}
+{% set version = "4.9.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: a99100a6591cfec2f43a28877a34efd55f608d5f43943d0e3f66d46872931fcf
+  sha256: 8b67c7566f302dd33373a7e8398250f5f8e73bfffbae5569407b34f7b494492f
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
 
