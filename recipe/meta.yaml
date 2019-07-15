@@ -1,5 +1,5 @@
 {% set name = "xrootd" %}
-{% set version = "4.9.1" %}
+{% set version = "4.10.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,12 +7,12 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: 8b67c7566f302dd33373a7e8398250f5f8e73bfffbae5569407b34f7b494492f
+  sha256: e7ecf422dd1cb821db2bb29da8edf5eae4a760a752fbd116f620ba202f62bee1
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
 
 build:
-  number: 1
+  number: 0
   skip: True  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
