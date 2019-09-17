@@ -29,6 +29,7 @@ requirements:
     - python
     - readline
     - libxml2
+    - libuuid
     - krb5
     - zlib
     - ncurses
