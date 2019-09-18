@@ -10,6 +10,7 @@ source:
   sha256: 204e412955bbce9a303410a0d0546c9ef10ae8b169484831b621413aaf06d598
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
+    - patches/fix_link_xrdcmslocalredirectlocal.patch
 
 build:
   number: 0
