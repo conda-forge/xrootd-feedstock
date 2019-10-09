@@ -16,6 +16,8 @@ cxx_compiler_version:
 - '9'
 krb5:
 - '1.16'
+libuuid:
+- 2.32.1
 libxml2:
 - '2.9'
 macos_machine:
@@ -31,6 +33,8 @@ pin_run_as_build:
     max_pin: x
   krb5:
     max_pin: x.x
+  libuuid:
+    max_pin: x
   libxml2:
     max_pin: x.x
   ncurses:
