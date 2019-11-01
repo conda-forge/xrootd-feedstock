@@ -1,9 +1,15 @@
+BUILD:
+- aarch64-conda_cos7-linux-gnu
 c_compiler:
 - gcc
 c_compiler_version:
-- '8'
+- '7'
+cdt_arch:
+- aarch64
+cdt_name:
+- cos7
 channel_sources:
-- conda-forge,defaults
+- conda-forge,c4aarch64,defaults
 channel_targets:
 - conda-forge main
 curl:
@@ -11,9 +17,9 @@ curl:
 cxx_compiler:
 - gxx
 cxx_compiler_version:
-- '8'
+- '7'
 docker_image:
-- condaforge/linux-anvil-ppc64le
+- condaforge/linux-anvil-aarch64
 krb5:
 - '1.16'
 libuuid:
@@ -45,7 +51,7 @@ pin_run_as_build:
   zlib:
     max_pin: x.x
 python:
-- '2.7'
+- '3.8'
 readline:
 - '8.0'
 zlib:
