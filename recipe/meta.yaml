@@ -12,7 +12,7 @@ source:
     - patches/fix_clock_gettime-2.patch  # [osx]
 
 build:
-  number: 1
+  number: 2
   skip: True  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
@@ -29,11 +29,11 @@ requirements:
     - python
     - readline
     - libxml2
-    - libuuid
+    - libuuid  # [not osx]
+    - libcurl
     - krb5
     - zlib
     - ncurses
-    - curl
   run:
     - openssl
     - python
@@ -42,7 +42,6 @@ requirements:
     - krb5
     - zlib
     - ncurses
-    - curl
 
 test:
   imports:
