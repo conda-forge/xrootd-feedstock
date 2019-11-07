@@ -1,0 +1,22 @@
+From 23e42b247bc1f260f295feb124e3302cf5b063c5 Mon Sep 17 00:00:00 2001
+From: Chris Burr <chrisburr@users.noreply.github.com>
+Date: Thu, 7 Nov 2019 12:10:31 +1030
+Subject: [PATCH] Link to ${UUID_LIBRARIES} instead of uuid
+
+---
+ src/XrdCl/CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdCl/CMakeLists.txt b/src/XrdCl/CMakeLists.txt
+index 45b3f3e9601..d87f53a1da2 100644
+--- a/src/XrdCl/CMakeLists.txt
++++ b/src/XrdCl/CMakeLists.txt
+@@ -96,7 +96,7 @@ target_link_libraries(
+   XrdXml
+   XrdUtils
+   pthread
+-  uuid
++  ${UUID_LIBRARIES}
+   z
+   ${EXTRA_LIBS}
+   ${CMAKE_DL_LIBS}
