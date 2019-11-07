@@ -10,6 +10,7 @@ source:
   sha256: c3264e69916f1646f781cc4cf34a71e4a707e8e10c7a6cf572fdd25a4e482be4
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
+    - patches/uuid-linking.patch
 
 build:
   number: 2

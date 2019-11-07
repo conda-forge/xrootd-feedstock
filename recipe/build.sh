@@ -1,6 +1,8 @@
 #!/bin/bash
 set -ex
 
+cp "${RECIPE_DIR}/FindLibUUID.cmake" cmake/FindLibUuid.cmake
+
 mkdir build-dir
 cd build-dir
 
