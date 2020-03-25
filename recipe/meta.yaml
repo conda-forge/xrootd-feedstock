@@ -1,5 +1,5 @@
 {% set name = "xrootd" %}
-{% set version = "4.11.2" %}
+{% set version = "4.11.3" %}
 
 package:
   name: {{ name|lower }}
@@ -7,13 +7,13 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: 53c3e168e8f0e1f67b7c43f3f4bbae0a9c4025a6f1dcb9acf558d0011940cf59
+  sha256: 4fe9667019790164f92e96137ffc5f0ddf3c3824826dc32be628e5a1aeb81359
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
 
 build:
   number: 0
-  skip: True  # [win]
+  skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
     - {{ pin_subpackage('xrootd', max_pin='x.x') }}
@@ -53,7 +53,7 @@ about:
   license: LGPL-3.0
   license_family: LGPL
   license_file: LICENSE
-  summary: 'High performance, scalable fault tolerant access to data'
+  summary: High performance, scalable fault tolerant access to data
 
   description: |
     The XROOTD project aims at giving high performance, scalable fault tolerant
