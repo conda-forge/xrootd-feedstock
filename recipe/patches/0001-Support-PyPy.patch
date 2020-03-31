@@ -1,0 +1,42 @@
+From 82f75965cc0883bda87da1035c20e1774f9af9f2 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Tue, 31 Mar 2020 22:30:47 +0200
+Subject: [PATCH] Support PyPy
+
+---
+ bindings/python/setup.py.in           | 6 ++++--
+ bindings/python/src/PyXRootDModule.cc | 1 -
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/bindings/python/setup.py.in b/bindings/python/setup.py.in
+index 921b178b9..e664344d5 100644
+--- a/bindings/python/setup.py.in
++++ b/bindings/python/setup.py.in
+@@ -13,8 +13,10 @@ cfg_vars["OPT"] = " ".join( flag for flag in opt.split() if flag not in ['-Wstri
+ cflags = cfg_vars["CFLAGS"]
+ cfg_vars["CFLAGS"] =  " ".join( flag for flag in cflags.split() if flag not in ['-Wstrict-prototypes' ${CLANG_PROHIBITED} ] ) + " --std=c++0x"
+ 
+-py_cflags = cfg_vars["PY_CFLAGS"]
+-cfg_vars["PY_CFLAGS"] = " ".join( flag for flag in py_cflags.split() if flag not in ['-Wstrict-prototypes' ${CLANG_PROHIBITED} ] ) + " --std=c++0x"
++# pypy doesn't define PY_CFLAGS so skip it if it's missing
++if "PY_CFLAGS" in cfg_vars:
++  py_cflags = cfg_vars["PY_CFLAGS"]
++  cfg_vars["PY_CFLAGS"] = " ".join( flag for flag in py_cflags.split() if flag not in ['-Wstrict-prototypes' ${CLANG_PROHIBITED} ] ) + " --std=c++0x"
+ 
+ ccl=cfg_vars["CC"].split()
+ ccl[0]="${CMAKE_C_COMPILER}"
+diff --git a/bindings/python/src/PyXRootDModule.cc b/bindings/python/src/PyXRootDModule.cc
+index 10a014d7a..ea6c515de 100644
+--- a/bindings/python/src/PyXRootDModule.cc
++++ b/bindings/python/src/PyXRootDModule.cc
+@@ -80,7 +80,6 @@ namespace PyXRootD
+ #endif
+   {
+     // Ensure GIL state is initialized
+-    Py_Initialize();
+     if ( !PyEval_ThreadsInitialized() ) {
+       PyEval_InitThreads();
+     }
+-- 
+2.21.0
+
