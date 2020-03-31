@@ -7,12 +7,13 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: 4fe9667019790164f92e96137ffc5f0ddf3c3824826dc32be628e5a1aeb81359
+  sha256: 534baafc9e0112a0c2c3010532d19892e1daee5916d54f9a81f881c0bb873b09
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
+    - patches/0001-Support-PyPy.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
