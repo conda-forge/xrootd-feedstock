@@ -6,8 +6,8 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/xrootd/xrootd/archive/v{{ version }}-rc1.tar.gz
-  sha256: a2507e40abd985b2422f0c6f1b59180119ccccce3f9477a83ddae7d307e6ae82
+  url: https://github.com/xrootd/xrootd/archive/v{{ version }}-rc2.tar.gz
+  sha256: 54b95d934cddd25b537dc34cf5c00476fb2b77ebba3e4663573030ba28397318
 
 build:
   number: 0
