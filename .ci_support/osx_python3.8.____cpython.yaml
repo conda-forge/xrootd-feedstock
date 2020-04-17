@@ -13,9 +13,9 @@ cxx_compiler:
 cxx_compiler_version:
 - '9'
 krb5:
-- '1.16'
+- 1.17.1
 libcurl:
-- '7.64'
+- '7'
 libxml2:
 - '2.9'
 macos_machine:

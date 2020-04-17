@@ -13,9 +13,9 @@ cxx_compiler_version:
 docker_image:
 - condaforge/linux-anvil-ppc64le
 krb5:
-- '1.16'
+- 1.17.1
 libcurl:
-- '7.64'
+- '7'
 libuuid:
 - 2.32.1
 libxml2:
