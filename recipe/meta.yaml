@@ -50,8 +50,7 @@ test:
 
 about:
   home: http://xrootd.org/
-  license: LGPL-3.0
-  license_family: LGPL
+  license: LGPL-3.0-or-later
   license_file: LICENSE
   summary: High performance, scalable fault tolerant access to data
 
