@@ -10,7 +10,6 @@ source:
   sha256: 5b4f0263bec49f8c94d6419f01ebedc9be6fb80c48e72e7d5ed67001128eb552
   patches:
     - patches/fix_clock_gettime-2.patch  # [osx]
-    - patches/0001-Support-PyPy.patch
 
 build:
   number: 0
