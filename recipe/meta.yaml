@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: f2f6c7ace44a089ac87e6d553b6edd9027ef49363381d512fd3819c21cd72ca7
+  sha256: fbd3363918d13c15b1a442bb551c01dfc02e528c7bfb0b7fbf47a5e6357424b4
 
 build:
   number: 1
