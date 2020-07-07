@@ -5,7 +5,7 @@ Home: http://xrootd.org/
 
 Package license: LGPL-3.0-or-later
 
-Feedstock license: BSD 3-Clause
+Feedstock license: BSD-3-Clause
 
 Summary: High performance, scalable fault tolerant access to data
 
