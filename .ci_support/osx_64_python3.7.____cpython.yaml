@@ -20,8 +20,6 @@ libxml2:
 - '2.9'
 macos_machine:
 - x86_64-apple-darwin13.4.0
-macos_min_version:
-- '10.9'
 ncurses:
 - '6.2'
 openssl:
@@ -50,5 +48,8 @@ readline:
 - '8.0'
 target_platform:
 - osx-64
+zip_keys:
+- - c_compiler_version
+  - cxx_compiler_version
 zlib:
 - '1.2'
