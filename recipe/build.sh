@@ -20,7 +20,7 @@ else
     extra_cmake_args=""
 fi
 
-cmake \
+cmake ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_INSTALL_LIBDIR="${PREFIX}/lib" \
