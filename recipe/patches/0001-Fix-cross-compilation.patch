@@ -1,0 +1,39 @@
+From dddcc5189d48de7c2c9a86a0475f80834266362e Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Sun, 6 Dec 2020 20:17:29 +0100
+Subject: [PATCH] Fix cross-compilation
+
+---
+ cmake/XRootDSystemCheck.cmake | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/cmake/XRootDSystemCheck.cmake b/cmake/XRootDSystemCheck.cmake
+index 800366c..e7ffc29 100644
+--- a/cmake/XRootDSystemCheck.cmake
++++ b/cmake/XRootDSystemCheck.cmake
+@@ -100,7 +100,10 @@ compiler_define_if_found( HAVE_ET_COM_ERR_H HAVE_ET_COM_ERR_H )
+ #-------------------------------------------------------------------------------
+ # Check for the atomics
+ #-------------------------------------------------------------------------------
+-check_cxx_source_runs(
++if (CMAKE_CROSSCOMPILING)
++  set(HAVE_ATOMICS ON)
++else()
++  check_cxx_source_runs(
+ "
+   int main()
+   {
+@@ -120,7 +123,9 @@ check_cxx_source_runs(
+     return 0;
+   }
+ "
+-HAVE_ATOMICS )
++  HAVE_ATOMICS )
++endif()
++
+ option(EnableAtomicsIfPresent "EnableAtomicsIfPresent" ON)
+ if ( EnableAtomicsIfPresent )
+   compiler_define_if_found( HAVE_ATOMICS HAVE_ATOMICS )
+-- 
+2.27.0
+

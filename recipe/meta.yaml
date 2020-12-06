@@ -8,6 +8,8 @@ package:
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
   sha256: 7e84bb25a7be73d718942ec0cf0783b1281b5669461a3a26cb9dd8444e9208e8
+  patches:
+    - patches/0001-Fix-cross-compilation.patch
 
 build:
   number: 0
@@ -18,10 +20,13 @@ build:
 
 requirements:
   build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - cmake
     - make
+    - pkg-config
   host:
     - openssl
     - python
