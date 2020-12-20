@@ -1,0 +1,2779 @@
+diff --git a/cmake/FindOpenSSL.cmake b/cmake/FindOpenSSL.cmake
+deleted file mode 100644
+index 7ea43b1eb..000000000
+--- a/cmake/FindOpenSSL.cmake
++++ /dev/null
+@@ -1,96 +0,0 @@
+-include( FindPackageHandleStandardArgs )
+-
+-if( OPENSSL_INCLUDE_DIR AND OPENSSL_LIBRARIES )
+-  set( OPENSSL_FOUND TRUE )
+-else()
+-  find_path(
+-    OPENSSL_INCLUDE_DIR
+-    NAMES openssl/ssl.h
+-    HINTS
+-    ${OPENSSL_ROOT_DIR}
+-    PATH_SUFFIXES
+-    include )
+-
+-  find_library(
+-    OPENSSL_SSL_LIBRARY
+-    NAMES ssl
+-    HINTS
+-    ${OPENSSL_ROOT_DIR}
+-    PATH_SUFFIXES
+-    ${LIBRARY_PATH_PREFIX}
+-    ${LIB_SEARCH_OPTIONS})
+-
+-  find_library(
+-    OPENSSL_CRYPTO_LIBRARY
+-    NAMES crypto
+-    HINTS
+-    ${OPENSSL_ROOT_DIR}
+-    PATH_SUFFIXES
+-    ${LIBRARY_PATH_PREFIX}
+-    ${LIB_SEARCH_OPTIONS})
+-
+-  set( OPENSSL_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} )
+-
+-  find_package_handle_standard_args(
+-    OpenSSL
+-    DEFAULT_MSG
+-    OPENSSL_LIBRARIES OPENSSL_INCLUDE_DIR )
+-
+-  mark_as_advanced( OPENSSL_INCLUDE_DIR OPENSSL_LIBRARIES )
+-endif()
+-
+-
+-#-------------------------------------------------------------------------------
+-# Check for the TLS support in the OpenSSL version that is available
+-#-------------------------------------------------------------------------------
+-
+-set ( CMAKE_REQUIRED_LIBRARIES ${OPENSSL_LIBRARIES} )
+-
+-check_function_exists(TLS_method HAVE_TLS_FUNC)
+-check_symbol_exists(
+-        TLS_method
+-        ${OPENSSL_INCLUDE_DIR}/openssl/ssl.h 
+-	HAVE_TLS_SYMB)
+-if( HAVE_TLS_FUNC AND HAVE_TLS_SYMB )
+-    add_definitions( -DHAVE_TLS )
+-endif()
+-
+-check_function_exists(TLSv1_2_method HAVE_TLS12_FUNC)
+-check_symbol_exists(
+-        TLSv1_2_method
+-        ${OPENSSL_INCLUDE_DIR}/openssl/ssl.h 
+-	HAVE_TLS12_SYMB)
+-if( HAVE_TLS12_FUNC AND HAVE_TLS12_SYMB )
+-    add_definitions( -DHAVE_TLS12 )
+-endif()
+-
+-check_function_exists(TLSv1_1_method HAVE_TLS11_FUNC)
+-check_symbol_exists(
+-        TLSv1_1_method 
+-	${OPENSSL_INCLUDE_DIR}/openssl/ssl.h
+-        HAVE_TLS11_SYMB)
+-if( HAVE_TLS11_FUNC AND HAVE_TLS11_SYMB )
+-    add_definitions( -DHAVE_TLS11 )
+-endif()
+-
+-check_function_exists(TLSv1_method HAVE_TLS1_FUNC)
+-check_symbol_exists(
+-        TLSv1_method 
+-	${OPENSSL_INCLUDE_DIR}/openssl/ssl.h
+-        HAVE_TLS1_SYMB)
+-if( HAVE_TLS1_FUNC AND HAVE_TLS1_SYMB )
+-    add_definitions( -DHAVE_TLS1 )
+-endif()
+-
+-check_function_exists(DH_compute_key_padded HAVE_DH_PADDED_FUNC)
+-check_symbol_exists(
+-        DH_compute_key_padded
+-        ${OPENSSL_INCLUDE_DIR}/openssl/dh.h 
+-    HAVE_DH_PADDED_SYMB)
+-if( HAVE_DH_PADDED_FUNC)
+-   if( HAVE_DH_PADDED_SYMB )
+-     add_definitions( -DHAVE_DH_PADDED )
+-   else()
+-     add_definitions( -DHAVE_DH_PADDED_FUNC )
+-   endif()
+-endif()
+diff --git a/cmake/XRootDFindLibs.cmake b/cmake/XRootDFindLibs.cmake
+index cd7d9e2ec..c38dc1da1 100644
+--- a/cmake/XRootDFindLibs.cmake
++++ b/cmake/XRootDFindLibs.cmake
+@@ -93,8 +93,6 @@ endif()
+ 
+ find_package( Macaroons )
+ include (FindPkgConfig)
+-pkg_check_modules(JSON json-c)
+-pkg_check_modules(UUID uuid)
+ 
+ if( MACAROONS_FOUND AND JSON_FOUND AND UUID_FOUND )
+   set( BUILD_MACAROONS TRUE )
+@@ -102,7 +100,7 @@ else()
+   set( BUILD_MACAROONS FALSE )
+ endif()
+ 
+-if( ENABLE_PYTHON AND (Linux OR APPLE) )
++if( ENABLE_PYTHON )
+   find_package( PythonInterp ${XRD_PYTHON_REQ_VERSION} )
+   find_package( PythonLibs ${XRD_PYTHON_REQ_VERSION} )
+   if( PYTHONINTERP_FOUND AND PYTHONLIBS_FOUND )
+diff --git a/src/XProtocol/XProtocol.cc b/src/XProtocol/XProtocol.cc
+index 23e67f701..5ab568392 100644
+--- a/src/XProtocol/XProtocol.cc
++++ b/src/XProtocol/XProtocol.cc
+@@ -57,7 +57,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ 
+ #include "XProtocol/XProtocol.hh"
+ 
+diff --git a/src/Xrd/XrdBuffXL.cc b/src/Xrd/XrdBuffXL.cc
+index c3b939242..5dac17c12 100644
+--- a/src/Xrd/XrdBuffXL.cc
++++ b/src/Xrd/XrdBuffXL.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #if !defined(__APPLE__) && !defined(__FreeBSD__)
+ #include <malloc.h>
+ #endif
+diff --git a/src/Xrd/XrdBuffer.cc b/src/Xrd/XrdBuffer.cc
+index 470e5ea3a..89dfbcffe 100644
+--- a/src/Xrd/XrdBuffer.cc
++++ b/src/Xrd/XrdBuffer.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #include <time.h>
+-#include <unistd.h>
+ #if !defined(__APPLE__) && !defined(__FreeBSD__)
+ #include <malloc.h>
+ #endif
+diff --git a/src/Xrd/XrdBuffer.hh b/src/Xrd/XrdBuffer.hh
+index 7c2a2722c..39926ed16 100644
+--- a/src/Xrd/XrdBuffer.hh
++++ b/src/Xrd/XrdBuffer.hh
+@@ -30,7 +30,6 @@
+ /******************************************************************************/
+ 
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include "XrdSys/XrdSysPthread.hh"
+ 
+diff --git a/src/Xrd/XrdConfig.cc b/src/Xrd/XrdConfig.cc
+index 1be14323e..912b08ef1 100644
+--- a/src/Xrd/XrdConfig.cc
++++ b/src/Xrd/XrdConfig.cc
+@@ -34,7 +34,6 @@
+    3) The /etc/services file for service corresponding to the program name.
+ */
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <pwd.h>
+diff --git a/src/Xrd/XrdInet.cc b/src/Xrd/XrdInet.cc
+index 9dd4b83a8..009993f6a 100644
+--- a/src/Xrd/XrdInet.cc
++++ b/src/Xrd/XrdInet.cc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <netdb.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #ifdef HAVE_SYSTEMD
+diff --git a/src/Xrd/XrdInet.hh b/src/Xrd/XrdInet.hh
+index ec57aae02..0756fa79e 100644
+--- a/src/Xrd/XrdInet.hh
++++ b/src/Xrd/XrdInet.hh
+@@ -29,7 +29,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ 
+ #include "XrdNet/XrdNet.hh"
+ #include "XrdNet/XrdNetIF.hh"
+diff --git a/src/Xrd/XrdLinkXeq.cc b/src/Xrd/XrdLinkXeq.cc
+index d7e1d9718..2829df436 100644
+--- a/src/Xrd/XrdLinkXeq.cc
++++ b/src/Xrd/XrdLinkXeq.cc
+@@ -32,7 +32,6 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/uio.h>
+ 
+diff --git a/src/Xrd/XrdMain.cc b/src/Xrd/XrdMain.cc
+index ebc8d3b99..7da172ec2 100644
+--- a/src/Xrd/XrdMain.cc
++++ b/src/Xrd/XrdMain.cc
+@@ -58,7 +58,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdint.h>
+diff --git a/src/Xrd/XrdPoll.cc b/src/Xrd/XrdPoll.cc
+index 8b8d723c3..32ab4838b 100644
+--- a/src/Xrd/XrdPoll.cc
++++ b/src/Xrd/XrdPoll.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+   
+diff --git a/src/Xrd/XrdScheduler.hh b/src/Xrd/XrdScheduler.hh
+index 4a4ae08e0..96c9dfb20 100644
+--- a/src/Xrd/XrdScheduler.hh
++++ b/src/Xrd/XrdScheduler.hh
+@@ -29,7 +29,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdSys/XrdSysPthread.hh"
+diff --git a/src/Xrd/XrdSendQ.cc b/src/Xrd/XrdSendQ.cc
+index 36def214c..6821a3d6a 100644
+--- a/src/Xrd/XrdSendQ.cc
++++ b/src/Xrd/XrdSendQ.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/uio.h>
+   
+ #include "Xrd/XrdLink.hh"
+diff --git a/src/Xrd/XrdSendQ.hh b/src/Xrd/XrdSendQ.hh
+index 6ddc0dab0..1df9c64ff 100644
+--- a/src/Xrd/XrdSendQ.hh
++++ b/src/Xrd/XrdSendQ.hh
+@@ -31,7 +31,6 @@
+ /******************************************************************************/
+ 
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/uio.h>
+   
+ #include "Xrd/XrdJob.hh"
+diff --git a/src/XrdAcc/XrdAccConfig.cc b/src/XrdAcc/XrdAccConfig.cc
+index 48a594747..4220e1895 100644
+--- a/src/XrdAcc/XrdAccConfig.cc
++++ b/src/XrdAcc/XrdAccConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <map>
+diff --git a/src/XrdAcc/XrdAccGroups.cc b/src/XrdAcc/XrdAccGroups.cc
+index d698a4330..3b40dd141 100644
+--- a/src/XrdAcc/XrdAccGroups.cc
++++ b/src/XrdAcc/XrdAccGroups.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <limits.h>
+diff --git a/src/XrdApps/XrdAccTest.cc b/src/XrdApps/XrdAccTest.cc
+index d472fd737..716d8a711 100644
+--- a/src/XrdApps/XrdAccTest.cc
++++ b/src/XrdApps/XrdAccTest.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdApps/XrdAppsCconfig.cc b/src/XrdApps/XrdAppsCconfig.cc
+index 9f441cb2d..283950874 100644
+--- a/src/XrdApps/XrdAppsCconfig.cc
++++ b/src/XrdApps/XrdAppsCconfig.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <fcntl.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/uio.h>
+diff --git a/src/XrdApps/XrdMapCluster.cc b/src/XrdApps/XrdMapCluster.cc
+index c755905cc..deab189e9 100644
+--- a/src/XrdApps/XrdMapCluster.cc
++++ b/src/XrdApps/XrdMapCluster.cc
+@@ -44,7 +44,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdApps/XrdMpxStats.cc b/src/XrdApps/XrdMpxStats.cc
+index 8e7a03bbd..200483d73 100644
+--- a/src/XrdApps/XrdMpxStats.cc
++++ b/src/XrdApps/XrdMpxStats.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/uio.h>
+ 
+diff --git a/src/XrdApps/XrdMpxXml.cc b/src/XrdApps/XrdMpxXml.cc
+index f8a39530e..356dd6961 100644
+--- a/src/XrdApps/XrdMpxXml.cc
++++ b/src/XrdApps/XrdMpxXml.cc
+@@ -32,7 +32,6 @@
+ #include <map>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/uio.h>
+ #include <time.h>
+diff --git a/src/XrdApps/XrdQStats.cc b/src/XrdApps/XrdQStats.cc
+index 2a9e9442a..199d7155a 100644
+--- a/src/XrdApps/XrdQStats.cc
++++ b/src/XrdApps/XrdQStats.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <iostream>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/uio.h>
+ 
+diff --git a/src/XrdApps/XrdWait41.cc b/src/XrdApps/XrdWait41.cc
+index d7772cd46..ab98708cf 100644
+--- a/src/XrdApps/XrdWait41.cc
++++ b/src/XrdApps/XrdWait41.cc
+@@ -47,7 +47,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+diff --git a/src/XrdApps/Xrdadler32.cc b/src/XrdApps/Xrdadler32.cc
+index ae5be1a24..098045dc9 100644
+--- a/src/XrdApps/Xrdadler32.cc
++++ b/src/XrdApps/Xrdadler32.cc
+@@ -40,7 +40,6 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <errno.h>
+ #ifdef __linux__
+diff --git a/src/XrdBwm/XrdBwm.cc b/src/XrdBwm/XrdBwm.cc
+index b556a6e98..a9d0f9a0f 100644
+--- a/src/XrdBwm/XrdBwm.cc
++++ b/src/XrdBwm/XrdBwm.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <string.h>
+ #include <stdio.h>
+diff --git a/src/XrdBwm/XrdBwmConfig.cc b/src/XrdBwm/XrdBwmConfig.cc
+index a7ee32d7c..7886a7ebb 100644
+--- a/src/XrdBwm/XrdBwmConfig.cc
++++ b/src/XrdBwm/XrdBwmConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdCks/XrdCksConfig.cc b/src/XrdCks/XrdCksConfig.cc
+index bcd4694bc..1af6757a0 100644
+--- a/src/XrdCks/XrdCksConfig.cc
++++ b/src/XrdCks/XrdCksConfig.cc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdCks/XrdCksLoader.cc b/src/XrdCks/XrdCksLoader.cc
+index 6899b972d..4eed2ebf0 100644
+--- a/src/XrdCks/XrdCksLoader.cc
++++ b/src/XrdCks/XrdCksLoader.cc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+   
+diff --git a/src/XrdCks/XrdCksManOss.cc b/src/XrdCks/XrdCksManOss.cc
+index 158854929..ba465e9c8 100644
+--- a/src/XrdCks/XrdCksManOss.cc
++++ b/src/XrdCks/XrdCksManOss.cc
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #include <time.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/param.h>
+diff --git a/src/XrdCks/XrdCksManager.cc b/src/XrdCks/XrdCksManager.cc
+index 97c282aa0..e577c0fdd 100644
+--- a/src/XrdCks/XrdCksManager.cc
++++ b/src/XrdCks/XrdCksManager.cc
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #include <time.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdCl/XrdClClassicCopyJob.cc b/src/XrdCl/XrdClClassicCopyJob.cc
+index f5da11897..c76f85828 100644
+--- a/src/XrdCl/XrdClClassicCopyJob.cc
++++ b/src/XrdCl/XrdClClassicCopyJob.cc
+@@ -51,7 +51,6 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <errno.h>
+-#include <unistd.h>
+ 
+ #if __cplusplus < 201103L
+ #include <time.h>
+diff --git a/src/XrdCl/XrdClDefaultEnv.cc b/src/XrdCl/XrdClDefaultEnv.cc
+index 28cdc0108..fc9c1b8a6 100644
+--- a/src/XrdCl/XrdClDefaultEnv.cc
++++ b/src/XrdCl/XrdClDefaultEnv.cc
+@@ -43,7 +43,6 @@
+ #include <string>
+ #include <pthread.h>
+ #include <sys/types.h>
+-#include <unistd.h>
+ 
+ XrdVERSIONINFO( XrdCl, client );
+ 
+diff --git a/src/XrdCl/XrdClFileStateHandler.cc b/src/XrdCl/XrdClFileStateHandler.cc
+index 0951bfc3e..89874e83e 100644
+--- a/src/XrdCl/XrdClFileStateHandler.cc
++++ b/src/XrdCl/XrdClFileStateHandler.cc
+@@ -42,7 +42,12 @@
+ #include <sstream>
+ #include <memory>
+ #include <sys/time.h>
+-#include <uuid/uuid.h>
++#ifdef _WIN32
++  #include <Objbase.h>
++  typedef GUID uuid_t;
++#else
++  #include <uuid/uuid.h>
++#endif
+ 
+ namespace
+ {
+@@ -469,8 +474,13 @@ namespace XrdCl
+     URL::ParamsMap cgi = pFileUrl->GetParams();
+     uuid_t uuid;
+     char requuid[37]= {0};
++#ifdef _WIN32
++    CoCreateGuid(&uuid);
++    sprintf(requuid, "%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X", uuid.Data1, uuid.Data2, uuid.Data3, uuid.Data4[0], uuid.Data4[1], uuid.Data4[2], uuid.Data4[3], uuid.Data4[4], uuid.Data4[5], uuid.Data4[6], uuid.Data4[7]);
++#else
+     uuid_generate( uuid );
+     uuid_unparse( uuid, requuid );
++#endif
+     cgi["xrdcl.requuid"] = requuid;
+     pFileUrl->SetParams( cgi );
+ 
+diff --git a/src/XrdCl/XrdClLocalFileHandler.cc b/src/XrdCl/XrdClLocalFileHandler.cc
+index 7610a4149..364b3672c 100644
+--- a/src/XrdCl/XrdClLocalFileHandler.cc
++++ b/src/XrdCl/XrdClLocalFileHandler.cc
+@@ -36,7 +36,6 @@
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <arpa/inet.h>
+ #include <aio.h>
+diff --git a/src/XrdCl/XrdClPlugInManager.cc b/src/XrdCl/XrdClPlugInManager.cc
+index 87625232d..ef455415c 100644
+--- a/src/XrdCl/XrdClPlugInManager.cc
++++ b/src/XrdCl/XrdClPlugInManager.cc
+@@ -31,7 +31,6 @@
+ #include "XrdSys/XrdSysPwd.hh"
+ #include "XrdVersion.hh"
+ 
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <vector>
+ #include <string>
+diff --git a/src/XrdCl/XrdClSocket.cc b/src/XrdCl/XrdClSocket.cc
+index b558a3a0e..f18a3afba 100644
+--- a/src/XrdCl/XrdClSocket.cc
++++ b/src/XrdCl/XrdClSocket.cc
+@@ -25,7 +25,6 @@
+ #include "XrdCl/XrdClTls.hh"
+ 
+ #include <arpa/inet.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <poll.h>
+ #include <ctime>
+diff --git a/src/XrdCl/XrdClThirdPartyCopyJob.cc b/src/XrdCl/XrdClThirdPartyCopyJob.cc
+index 22b721478..3fe9dcde6 100644
+--- a/src/XrdCl/XrdClThirdPartyCopyJob.cc
++++ b/src/XrdCl/XrdClThirdPartyCopyJob.cc
+@@ -44,7 +44,6 @@
+ #include <cstdio>
+ #include <sys/time.h>
+ #include <sys/types.h>
+-#include <unistd.h>
+ 
+ namespace
+ {
+diff --git a/src/XrdCl/XrdClXRootDTransport.cc b/src/XrdCl/XrdClXRootDTransport.cc
+index 88782b3f8..ee574f826 100644
+--- a/src/XrdCl/XrdClXRootDTransport.cc
++++ b/src/XrdCl/XrdClXRootDTransport.cc
+@@ -50,7 +50,6 @@
+ 
+ #include <arpa/inet.h>
+ #include <sys/types.h>
+-#include <unistd.h>
+ #include <dlfcn.h>
+ #include <sstream>
+ #include <iomanip>
+diff --git a/src/XrdClient/XrdClient.cc b/src/XrdClient/XrdClient.cc
+index a641cceff..117803f03 100644
+--- a/src/XrdClient/XrdClient.cc
++++ b/src/XrdClient/XrdClient.cc
+@@ -50,7 +50,6 @@
+ 
+ #include <stdio.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #endif
+ 
+ #include <sys/types.h>
+diff --git a/src/XrdClient/XrdClientAdmin.cc b/src/XrdClient/XrdClientAdmin.cc
+index 769dc5e90..aa890da9b 100644
+--- a/src/XrdClient/XrdClientAdmin.cc
++++ b/src/XrdClient/XrdClientAdmin.cc
+@@ -48,7 +48,6 @@
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <strings.h>
+ #include <netinet/in.h>
+ #endif
+diff --git a/src/XrdClient/XrdClientPSock.cc b/src/XrdClient/XrdClientPSock.cc
+index 641b771c1..4b5bcc2f2 100644
+--- a/src/XrdClient/XrdClientPSock.cc
++++ b/src/XrdClient/XrdClientPSock.cc
+@@ -47,7 +47,6 @@
+ #endif
+ 
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <sys/poll.h>
+ #else
+ #include "XrdSys/XrdWin32.hh"
+diff --git a/src/XrdClient/XrdClientSock.cc b/src/XrdClient/XrdClientSock.cc
+index 8d8b29003..f3319bc6a 100644
+--- a/src/XrdClient/XrdClientSock.cc
++++ b/src/XrdClient/XrdClientSock.cc
+@@ -51,7 +51,6 @@
+ #ifndef WIN32
+ #include <netinet/in.h>
+ #include <netinet/tcp.h>
+-#include <unistd.h>
+ #include <sys/poll.h>
+ #else
+ #include "XrdSys/XrdWin32.hh"
+diff --git a/src/XrdClient/XrdClientUrlSet.cc b/src/XrdClient/XrdClientUrlSet.cc
+index 50e0a332c..e69bc73f4 100644
+--- a/src/XrdClient/XrdClientUrlSet.cc
++++ b/src/XrdClient/XrdClientUrlSet.cc
+@@ -49,7 +49,6 @@
+ #include <stdlib.h>
+ #include <resolv.h>
+ #include <sys/time.h>
+-#include <unistd.h>
+ #else
+ #include <stdlib.h>
+ #include "XrdSys/XrdWin32.hh"
+diff --git a/src/XrdClient/XrdCommandLine.cc b/src/XrdClient/XrdCommandLine.cc
+index 7b6164de7..d8d381623 100644
+--- a/src/XrdClient/XrdCommandLine.cc
++++ b/src/XrdClient/XrdCommandLine.cc
+@@ -41,7 +41,6 @@
+ #include "XrdSys/XrdSysHeaders.hh"
+ 
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <stdarg.h>
+ #include <sstream>
+ #include <string>
+diff --git a/src/XrdClient/XrdCpWorkLst.cc b/src/XrdClient/XrdCpWorkLst.cc
+index 852fb142f..670ddd8b0 100644
+--- a/src/XrdClient/XrdCpWorkLst.cc
++++ b/src/XrdClient/XrdCpWorkLst.cc
+@@ -40,7 +40,6 @@
+ #include <errno.h>
+ #include <sstream>
+ #ifndef WIN32
+-#include <unistd.h>
+ #else
+ #include "XrdSys/XrdWin32.hh"
+ #endif
+diff --git a/src/XrdClient/XrdStageTool.cc b/src/XrdClient/XrdStageTool.cc
+index 7efcba044..2fd2c45d4 100644
+--- a/src/XrdClient/XrdStageTool.cc
++++ b/src/XrdClient/XrdStageTool.cc
+@@ -41,7 +41,6 @@
+ #include "XrdSys/XrdSysHeaders.hh"
+ 
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <stdarg.h>
+ #include <sstream>
+ 
+diff --git a/src/XrdCms/XrdCmsAdmin.cc b/src/XrdCms/XrdCmsAdmin.cc
+index 0ed41cfea..8c2358d20 100644
+--- a/src/XrdCms/XrdCmsAdmin.cc
++++ b/src/XrdCms/XrdCmsAdmin.cc
+@@ -31,7 +31,6 @@
+ #include <stdio.h>
+ #include <limits.h>
+ #include <string>
+-#include <unistd.h>
+ #include <inttypes.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+diff --git a/src/XrdCms/XrdCmsClientConfig.cc b/src/XrdCms/XrdCmsClientConfig.cc
+index 24282cb5c..b781e14ef 100644
+--- a/src/XrdCms/XrdCmsClientConfig.cc
++++ b/src/XrdCms/XrdCmsClientConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <strings.h>
+ #include <stdio.h>
+ #include <sys/param.h>
+diff --git a/src/XrdCms/XrdCmsCluster.cc b/src/XrdCms/XrdCmsCluster.cc
+index 61f284f36..752008c38 100644
+--- a/src/XrdCms/XrdCmsCluster.cc
++++ b/src/XrdCms/XrdCmsCluster.cc
+@@ -32,7 +32,6 @@
+ #include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdCms/XrdCmsConfig.cc b/src/XrdCms/XrdCmsConfig.cc
+index 164355a90..7ab848be5 100644
+--- a/src/XrdCms/XrdCmsConfig.cc
++++ b/src/XrdCms/XrdCmsConfig.cc
+@@ -33,7 +33,6 @@
+ */
+   
+ #include <string>
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <strings.h>
+diff --git a/src/XrdCms/XrdCmsFinder.cc b/src/XrdCms/XrdCmsFinder.cc
+index 541388441..c49c2ed26 100644
+--- a/src/XrdCms/XrdCmsFinder.cc
++++ b/src/XrdCms/XrdCmsFinder.cc
+@@ -35,7 +35,6 @@
+ #include <limits.h>
+ #include <strings.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/times.h>
+ #include <sys/types.h>
+diff --git a/src/XrdCms/XrdCmsJob.cc b/src/XrdCms/XrdCmsJob.cc
+index 999ade7f5..767984b91 100644
+--- a/src/XrdCms/XrdCmsJob.cc
++++ b/src/XrdCms/XrdCmsJob.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+  
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdCms/XrdCmsManList.cc b/src/XrdCms/XrdCmsManList.cc
+index c580c08b9..43efb49ec 100644
+--- a/src/XrdCms/XrdCmsManList.cc
++++ b/src/XrdCms/XrdCmsManList.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <ctype.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ 
+ #include "XrdCms/XrdCmsManList.hh"
+ #include "XrdNet/XrdNetAddr.hh"
+diff --git a/src/XrdCms/XrdCmsManager.cc b/src/XrdCms/XrdCmsManager.cc
+index e79da2ef8..e7edbda03 100644
+--- a/src/XrdCms/XrdCmsManager.cc
++++ b/src/XrdCms/XrdCmsManager.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdCms/XrdCmsMeter.cc b/src/XrdCms/XrdCmsMeter.cc
+index 9152030b4..1970aa6fd 100644
+--- a/src/XrdCms/XrdCmsMeter.cc
++++ b/src/XrdCms/XrdCmsMeter.cc
+@@ -33,7 +33,6 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+diff --git a/src/XrdCms/XrdCmsNode.hh b/src/XrdCms/XrdCmsNode.hh
+index 25825a30a..9b7d995e2 100644
+--- a/src/XrdCms/XrdCmsNode.hh
++++ b/src/XrdCms/XrdCmsNode.hh
+@@ -31,7 +31,6 @@
+ /******************************************************************************/
+ 
+ #include <string.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/uio.h>
+   
+diff --git a/src/XrdCms/XrdCmsPrepArgs.cc b/src/XrdCms/XrdCmsPrepArgs.cc
+index dd8f155b7..673c5d297 100644
+--- a/src/XrdCms/XrdCmsPrepArgs.cc
++++ b/src/XrdCms/XrdCmsPrepArgs.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <stdlib.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdCms/XrdCmsPrepare.cc b/src/XrdCms/XrdCmsPrepare.cc
+index 69b4ba074..d5d17a4de 100644
+--- a/src/XrdCms/XrdCmsPrepare.cc
++++ b/src/XrdCms/XrdCmsPrepare.cc
+@@ -30,7 +30,6 @@
+   
+ #include <fcntl.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+diff --git a/src/XrdCms/XrdCmsProtocol.cc b/src/XrdCms/XrdCmsProtocol.cc
+index 2c887a848..ffd0a3656 100644
+--- a/src/XrdCms/XrdCmsProtocol.cc
++++ b/src/XrdCms/XrdCmsProtocol.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <signal.h>
+diff --git a/src/XrdCms/XrdCmsRRData.cc b/src/XrdCms/XrdCmsRRData.cc
+index 847158ab8..a16ee9f89 100644
+--- a/src/XrdCms/XrdCmsRRData.cc
++++ b/src/XrdCms/XrdCmsRRData.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ 
+ #include "XrdCms/XrdCmsRRData.hh"
+ 
+diff --git a/src/XrdCms/XrdCmsState.cc b/src/XrdCms/XrdCmsState.cc
+index a7f794e9b..f41f4ab8e 100644
+--- a/src/XrdCms/XrdCmsState.cc
++++ b/src/XrdCms/XrdCmsState.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <fcntl.h>
+ #include <limits.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdCms/XrdCmsUtils.cc b/src/XrdCms/XrdCmsUtils.cc
+index cf12098f2..1f64c385f 100644
+--- a/src/XrdCms/XrdCmsUtils.cc
++++ b/src/XrdCms/XrdCmsUtils.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <ctype.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ 
+ #include "XrdCms/XrdCmsUtils.hh"
+ #include "XrdNet/XrdNetAddr.hh"
+diff --git a/src/XrdCns/XrdCnsConfig.cc b/src/XrdCns/XrdCnsConfig.cc
+index 632dc6dcb..fb1ede8dc 100644
+--- a/src/XrdCns/XrdCnsConfig.cc
++++ b/src/XrdCns/XrdCnsConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <string.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+diff --git a/src/XrdCns/XrdCnsDaemon.cc b/src/XrdCns/XrdCnsDaemon.cc
+index 815d99076..7dffa4381 100644
+--- a/src/XrdCns/XrdCnsDaemon.cc
++++ b/src/XrdCns/XrdCnsDaemon.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <errno.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <string.h>
+ #include <stdio.h>
+diff --git a/src/XrdCns/XrdCnsLog.cc b/src/XrdCns/XrdCnsLog.cc
+index 3b017657a..bf3ab3272 100644
+--- a/src/XrdCns/XrdCnsLog.cc
++++ b/src/XrdCns/XrdCnsLog.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+   
+ #include <errno.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <string.h>
+ #include <sys/types.h>
+diff --git a/src/XrdCns/XrdCnsLogClient.cc b/src/XrdCns/XrdCnsLogClient.cc
+index fc0d71036..b39d251c9 100644
+--- a/src/XrdCns/XrdCnsLogClient.cc
++++ b/src/XrdCns/XrdCnsLogClient.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+   
+ #include <errno.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <string.h>
+ #include <stdio.h>
+diff --git a/src/XrdCns/XrdCnsLogFile.cc b/src/XrdCns/XrdCnsLogFile.cc
+index a670c05e0..96769620a 100644
+--- a/src/XrdCns/XrdCnsLogFile.cc
++++ b/src/XrdCns/XrdCnsLogFile.cc
+@@ -32,7 +32,6 @@
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <time.h>
+diff --git a/src/XrdCns/XrdCnsLogServer.cc b/src/XrdCns/XrdCnsLogServer.cc
+index b100d4ea6..e4bc160bc 100644
+--- a/src/XrdCns/XrdCnsLogServer.cc
++++ b/src/XrdCns/XrdCnsLogServer.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+   
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+diff --git a/src/XrdCns/XrdCnsMain.cc b/src/XrdCns/XrdCnsMain.cc
+index b3d853e74..a7c38e952 100644
+--- a/src/XrdCns/XrdCnsMain.cc
++++ b/src/XrdCns/XrdCnsMain.cc
+@@ -92,7 +92,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <signal.h>
+diff --git a/src/XrdCns/XrdCnsSsi.cc b/src/XrdCns/XrdCnsSsi.cc
+index 0f498f2b3..b8ad23c94 100644
+--- a/src/XrdCns/XrdCnsSsi.cc
++++ b/src/XrdCns/XrdCnsSsi.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <string.h>
+ #include <stdio.h>
+ #include <time.h>
+diff --git a/src/XrdCns/XrdCnsSsiCfg.cc b/src/XrdCns/XrdCnsSsiCfg.cc
+index 4de76fed7..5fdbec255 100644
+--- a/src/XrdCns/XrdCnsSsiCfg.cc
++++ b/src/XrdCns/XrdCnsSsiCfg.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <string.h>
+ #include <stdio.h>
+ #include <sys/types.h>
+diff --git a/src/XrdCns/XrdCnsSsiMain.cc b/src/XrdCns/XrdCnsSsiMain.cc
+index 0997f8de5..88a5d51dd 100644
+--- a/src/XrdCns/XrdCnsSsiMain.cc
++++ b/src/XrdCns/XrdCnsSsiMain.cc
+@@ -60,7 +60,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <signal.h>
+diff --git a/src/XrdCrypto/XrdCryptosslX509.cc b/src/XrdCrypto/XrdCryptosslX509.cc
+index 92c1ea5f7..c08736e91 100644
+--- a/src/XrdCrypto/XrdCryptosslX509.cc
++++ b/src/XrdCrypto/XrdCryptosslX509.cc
+@@ -33,7 +33,6 @@
+ /* ************************************************************************** */
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <errno.h>
+ 
+ #include "XrdCrypto/XrdCryptosslRSA.hh"
+diff --git a/src/XrdCrypto/XrdCryptosslX509Crl.cc b/src/XrdCrypto/XrdCryptosslX509Crl.cc
+index dae58e332..2719141e7 100644
+--- a/src/XrdCrypto/XrdCryptosslX509Crl.cc
++++ b/src/XrdCrypto/XrdCryptosslX509Crl.cc
+@@ -33,7 +33,6 @@
+ /* ************************************************************************** */
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <time.h>
+ 
+diff --git a/src/XrdCrypto/XrdCryptosslX509Req.cc b/src/XrdCrypto/XrdCryptosslX509Req.cc
+index 28621ab26..f06f5fe6d 100644
+--- a/src/XrdCrypto/XrdCryptosslX509Req.cc
++++ b/src/XrdCrypto/XrdCryptosslX509Req.cc
+@@ -33,7 +33,6 @@
+ /* ************************************************************************** */
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <errno.h>
+ 
+ #include "XrdCrypto/XrdCryptosslRSA.hh"
+diff --git a/src/XrdDig/XrdDigAuth.cc b/src/XrdDig/XrdDigAuth.cc
+index 24aa6f8b7..d121579e5 100644
+--- a/src/XrdDig/XrdDigAuth.cc
++++ b/src/XrdDig/XrdDigAuth.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <stdio.h>
+diff --git a/src/XrdDig/XrdDigConfig.cc b/src/XrdDig/XrdDigConfig.cc
+index 6e826c655..f73c31a6a 100644
+--- a/src/XrdDig/XrdDigConfig.cc
++++ b/src/XrdDig/XrdDigConfig.cc
+@@ -34,7 +34,6 @@
+ #include <stdlib.h>
+ #include <strings.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+diff --git a/src/XrdDig/XrdDigFS.cc b/src/XrdDig/XrdDigFS.cc
+index c0ef67d46..a0fbf1758 100644
+--- a/src/XrdDig/XrdDigFS.cc
++++ b/src/XrdDig/XrdDigFS.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #include <sys/types.h>
+-#include <unistd.h>
+ #include <dirent.h>
+ #include <fcntl.h>
+ #include <memory.h>
+diff --git a/src/XrdFfs/XrdFfsMisc.cc b/src/XrdFfs/XrdFfsMisc.cc
+index 0fe335966..21be7ce2a 100644
+--- a/src/XrdFfs/XrdFfsMisc.cc
++++ b/src/XrdFfs/XrdFfsMisc.cc
+@@ -33,7 +33,6 @@
+ //#include <sys/xattr.h>
+ #include <iostream>
+ #include <libgen.h>
+-#include <unistd.h>
+ //#include <netdb.h>
+ #include <pwd.h>
+ #include <grp.h>
+diff --git a/src/XrdFfs/XrdFfsPosix.cc b/src/XrdFfs/XrdFfsPosix.cc
+index c65f23c8b..d0b6b734b 100644
+--- a/src/XrdFfs/XrdFfsPosix.cc
++++ b/src/XrdFfs/XrdFfsPosix.cc
+@@ -43,7 +43,6 @@
+ 
+ #include <iostream>
+ #include <libgen.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+ #include <syslog.h>
+ #include "XrdFfs/XrdFfsPosix.hh"
+diff --git a/src/XrdFfs/XrdFfsPosix.hh b/src/XrdFfs/XrdFfsPosix.hh
+index ce8481c54..ae6ee5383 100644
+--- a/src/XrdFfs/XrdFfsPosix.hh
++++ b/src/XrdFfs/XrdFfsPosix.hh
+@@ -36,7 +36,6 @@
+ #include <sys/param.h>
+ #include <sys/resource.h>
+ #include <sys/uio.h>
+-#include <unistd.h>
+ #include <sys/statvfs.h>
+ 
+ 
+diff --git a/src/XrdFfs/XrdFfsWcache.cc b/src/XrdFfs/XrdFfsWcache.cc
+index c71e46d8a..51cf8f17a 100644
+--- a/src/XrdFfs/XrdFfsWcache.cc
++++ b/src/XrdFfs/XrdFfsWcache.cc
+@@ -49,7 +49,6 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/resource.h>
+-#include <unistd.h>
+ #include <errno.h>
+ 
+ #include <pthread.h>
+diff --git a/src/XrdFfs/XrdFfsXrootdfs.cc b/src/XrdFfs/XrdFfsXrootdfs.cc
+index 92c3358c7..e6a6391b2 100644
+--- a/src/XrdFfs/XrdFfsXrootdfs.cc
++++ b/src/XrdFfs/XrdFfsXrootdfs.cc
+@@ -31,7 +31,6 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <stddef.h>
+ 
+ #if defined(__linux__)
+diff --git a/src/XrdFrc/XrdFrcCID.cc b/src/XrdFrc/XrdFrcCID.cc
+index 2a98e120a..33da3659e 100644
+--- a/src/XrdFrc/XrdFrcCID.cc
++++ b/src/XrdFrc/XrdFrcCID.cc
+@@ -32,7 +32,6 @@
+ #include <strings.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdFrc/XrdFrcReqAgent.cc b/src/XrdFrc/XrdFrcReqAgent.cc
+index 952de9174..4da9c8333 100644
+--- a/src/XrdFrc/XrdFrcReqAgent.cc
++++ b/src/XrdFrc/XrdFrcReqAgent.cc
+@@ -32,7 +32,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrc/XrdFrcReqFile.cc b/src/XrdFrc/XrdFrcReqFile.cc
+index 9a8725576..2ec179190 100644
+--- a/src/XrdFrc/XrdFrcReqFile.cc
++++ b/src/XrdFrc/XrdFrcReqFile.cc
+@@ -32,7 +32,6 @@
+ #include <strings.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdFrc/XrdFrcUtils.cc b/src/XrdFrc/XrdFrcUtils.cc
+index b0d127b8e..469d67cdd 100644
+--- a/src/XrdFrc/XrdFrcUtils.cc
++++ b/src/XrdFrc/XrdFrcUtils.cc
+@@ -30,7 +30,6 @@
+   
+ #include <errno.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <utime.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+diff --git a/src/XrdFrm/XrdFrmAdmin.cc b/src/XrdFrm/XrdFrmAdmin.cc
+index 5e7691b4c..f34478891 100644
+--- a/src/XrdFrm/XrdFrmAdmin.cc
++++ b/src/XrdFrm/XrdFrmAdmin.cc
+@@ -34,7 +34,6 @@
+ #include <time.h>
+ #include <pwd.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmAdminFiles.cc b/src/XrdFrm/XrdFrmAdminFiles.cc
+index c3dae8202..5670d076f 100644
+--- a/src/XrdFrm/XrdFrmAdminFiles.cc
++++ b/src/XrdFrm/XrdFrmAdminFiles.cc
+@@ -34,7 +34,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmAdminMain.cc b/src/XrdFrm/XrdFrmAdminMain.cc
+index 317787efe..a5a137e24 100644
+--- a/src/XrdFrm/XrdFrmAdminMain.cc
++++ b/src/XrdFrm/XrdFrmAdminMain.cc
+@@ -54,7 +54,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <signal.h>
+diff --git a/src/XrdFrm/XrdFrmAdminReloc.cc b/src/XrdFrm/XrdFrmAdminReloc.cc
+index 9537ef87b..8bb06a37a 100644
+--- a/src/XrdFrm/XrdFrmAdminReloc.cc
++++ b/src/XrdFrm/XrdFrmAdminReloc.cc
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #include <time.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <utime.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+diff --git a/src/XrdFrm/XrdFrmCns.cc b/src/XrdFrm/XrdFrmCns.cc
+index a59719f73..4093058d2 100644
+--- a/src/XrdFrm/XrdFrmCns.cc
++++ b/src/XrdFrm/XrdFrmCns.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <errno.h>
+ #include <poll.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmConfig.cc b/src/XrdFrm/XrdFrmConfig.cc
+index db811508d..3d6c811ba 100644
+--- a/src/XrdFrm/XrdFrmConfig.cc
++++ b/src/XrdFrm/XrdFrmConfig.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <dirent.h>
+ #include <string.h>
+diff --git a/src/XrdFrm/XrdFrmConfig.hh b/src/XrdFrm/XrdFrmConfig.hh
+index 3f68415c0..19c3a7e3a 100644
+--- a/src/XrdFrm/XrdFrmConfig.hh
++++ b/src/XrdFrm/XrdFrmConfig.hh
+@@ -30,7 +30,6 @@
+ /******************************************************************************/
+ 
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include "XrdOss/XrdOssSpace.hh"
+ 
+diff --git a/src/XrdFrm/XrdFrmFiles.cc b/src/XrdFrm/XrdFrmFiles.cc
+index 0bd3eeb04..3aa46cf6a 100644
+--- a/src/XrdFrm/XrdFrmFiles.cc
++++ b/src/XrdFrm/XrdFrmFiles.cc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmMonitor.cc b/src/XrdFrm/XrdFrmMonitor.cc
+index bccb4f450..8f415e6a1 100644
+--- a/src/XrdFrm/XrdFrmMonitor.cc
++++ b/src/XrdFrm/XrdFrmMonitor.cc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdFrc/XrdFrcTrace.hh"
+diff --git a/src/XrdFrm/XrdFrmPurgMain.cc b/src/XrdFrm/XrdFrmPurgMain.cc
+index 5f53aa55e..782a829a3 100644
+--- a/src/XrdFrm/XrdFrmPurgMain.cc
++++ b/src/XrdFrm/XrdFrmPurgMain.cc
+@@ -75,7 +75,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdFrm/XrdFrmReqBoss.cc b/src/XrdFrm/XrdFrmReqBoss.cc
+index a0644cff6..4211b6de9 100644
+--- a/src/XrdFrm/XrdFrmReqBoss.cc
++++ b/src/XrdFrm/XrdFrmReqBoss.cc
+@@ -32,7 +32,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmTransfer.cc b/src/XrdFrm/XrdFrmTransfer.cc
+index 8e0e8c2ca..fc7b706b3 100644
+--- a/src/XrdFrm/XrdFrmTransfer.cc
++++ b/src/XrdFrm/XrdFrmTransfer.cc
+@@ -32,7 +32,6 @@
+ #include <strings.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <utime.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdFrm/XrdFrmXfrAgent.cc b/src/XrdFrm/XrdFrmXfrAgent.cc
+index 55f4bce6d..677cdb759 100644
+--- a/src/XrdFrm/XrdFrmXfrAgent.cc
++++ b/src/XrdFrm/XrdFrmXfrAgent.cc
+@@ -31,7 +31,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmXfrDaemon.cc b/src/XrdFrm/XrdFrmXfrDaemon.cc
+index 89556136e..bac8bffed 100644
+--- a/src/XrdFrm/XrdFrmXfrDaemon.cc
++++ b/src/XrdFrm/XrdFrmXfrDaemon.cc
+@@ -32,7 +32,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdFrm/XrdFrmXfrMain.cc b/src/XrdFrm/XrdFrmXfrMain.cc
+index a0f9c07b4..dff7b63f7 100644
+--- a/src/XrdFrm/XrdFrmXfrMain.cc
++++ b/src/XrdFrm/XrdFrmXfrMain.cc
+@@ -70,7 +70,6 @@ Where:
+ /*                         i n c l u d e   f i l e s                          */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdFrm/XrdFrmXfrQueue.cc b/src/XrdFrm/XrdFrmXfrQueue.cc
+index 202a22ab0..3167afe4a 100644
+--- a/src/XrdFrm/XrdFrmXfrQueue.cc
++++ b/src/XrdFrm/XrdFrmXfrQueue.cc
+@@ -32,7 +32,6 @@
+ #include <strings.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <utime.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdHttp/XrdHttpProtocol.hh b/src/XrdHttp/XrdHttpProtocol.hh
+index f4f242950..ebfa99180 100644
+--- a/src/XrdHttp/XrdHttpProtocol.hh
++++ b/src/XrdHttp/XrdHttpProtocol.hh
+@@ -35,7 +35,6 @@
+ 
+ 
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdSys/XrdSysError.hh"
+diff --git a/src/XrdNet/XrdNet.cc b/src/XrdNet/XrdNet.cc
+index 88f4b7607..3201b494d 100644
+--- a/src/XrdNet/XrdNet.cc
++++ b/src/XrdNet/XrdNet.cc
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #ifndef WIN32
+ #include <poll.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
+ #else
+diff --git a/src/XrdNet/XrdNet.hh b/src/XrdNet/XrdNet.hh
+index 680b35525..b5357eac9 100644
+--- a/src/XrdNet/XrdNet.hh
++++ b/src/XrdNet/XrdNet.hh
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #ifndef WIN32
+ #include <strings.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/socket.h>
+ #else
+diff --git a/src/XrdNet/XrdNetAddr.cc b/src/XrdNet/XrdNetAddr.cc
+index b9052fc67..497ed1630 100644
+--- a/src/XrdNet/XrdNetAddr.cc
++++ b/src/XrdNet/XrdNetAddr.cc
+@@ -31,7 +31,6 @@
+ #include <ctype.h>
+ #include <netdb.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <arpa/inet.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdNet/XrdNetBuffer.cc b/src/XrdNet/XrdNetBuffer.cc
+index 5d5be42a9..738e0fc70 100644
+--- a/src/XrdNet/XrdNetBuffer.cc
++++ b/src/XrdNet/XrdNetBuffer.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+   
+ #ifndef WIN32
+-#include <unistd.h>
+ #endif
+ #include <sys/types.h>
+ #include <stdlib.h>
+diff --git a/src/XrdNet/XrdNetMsg.hh b/src/XrdNet/XrdNetMsg.hh
+index 85d2b85e4..a6c265ab4 100644
+--- a/src/XrdNet/XrdNetMsg.hh
++++ b/src/XrdNet/XrdNetMsg.hh
+@@ -34,7 +34,6 @@
+ #include <string.h>
+ #ifndef WIN32
+ #include <strings.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/socket.h>
+ #else
+diff --git a/src/XrdNet/XrdNetSocket.cc b/src/XrdNet/XrdNetSocket.cc
+index 004478a4e..7a1b58550 100644
+--- a/src/XrdNet/XrdNetSocket.cc
++++ b/src/XrdNet/XrdNetSocket.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdNet/XrdNetUtils.cc b/src/XrdNet/XrdNetUtils.cc
+index b0e854852..2b23af29f 100644
+--- a/src/XrdNet/XrdNetUtils.cc
++++ b/src/XrdNet/XrdNetUtils.cc
+@@ -32,7 +32,6 @@
+ #include <inttypes.h>
+ #include <netdb.h>
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include <netinet/in.h>
+ #include <sys/socket.h>
+diff --git a/src/XrdOfs/XrdOfs.cc b/src/XrdOfs/XrdOfs.cc
+index 34e0d03f4..591c2e851 100644
+--- a/src/XrdOfs/XrdOfs.cc
++++ b/src/XrdOfs/XrdOfs.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <dirent.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdOfs/XrdOfsConfig.cc b/src/XrdOfs/XrdOfsConfig.cc
+index 24cad5d59..409311a6d 100644
+--- a/src/XrdOfs/XrdOfsConfig.cc
++++ b/src/XrdOfs/XrdOfsConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdOfs/XrdOfsConfigPI.cc b/src/XrdOfs/XrdOfsConfigPI.cc
+index ba3f1d853..d691a24c9 100644
+--- a/src/XrdOfs/XrdOfsConfigPI.cc
++++ b/src/XrdOfs/XrdOfsConfigPI.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
+diff --git a/src/XrdOfs/XrdOfsFSctl.cc b/src/XrdOfs/XrdOfsFSctl.cc
+index a0d59fcfc..eb573ce6b 100644
+--- a/src/XrdOfs/XrdOfsFSctl.cc
++++ b/src/XrdOfs/XrdOfsFSctl.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <string.h>
+diff --git a/src/XrdOfs/XrdOfsPoscq.cc b/src/XrdOfs/XrdOfsPoscq.cc
+index 1cf42d878..770bff87c 100644
+--- a/src/XrdOfs/XrdOfsPoscq.cc
++++ b/src/XrdOfs/XrdOfsPoscq.cc
+@@ -33,7 +33,6 @@
+ #include <stddef.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdOss/XrdOssAio.cc b/src/XrdOss/XrdOssAio.cc
+index cba9089f8..141c96a5f 100644
+--- a/src/XrdOss/XrdOssAio.cc
++++ b/src/XrdOss/XrdOssAio.cc
+@@ -30,7 +30,6 @@
+   
+ #include <signal.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <fcntl.h>
+ #ifdef _POSIX_ASYNCHRONOUS_IO
+ #ifdef __FreeBSD__
+diff --git a/src/XrdOss/XrdOssApi.cc b/src/XrdOss/XrdOssApi.cc
+index a634b5c51..86316bbbc 100644
+--- a/src/XrdOss/XrdOssApi.cc
++++ b/src/XrdOss/XrdOssApi.cc
+@@ -31,7 +31,6 @@
+ /*                             i n c l u d e s                                */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <signal.h>
+diff --git a/src/XrdOss/XrdOssCache.cc b/src/XrdOss/XrdOssCache.cc
+index baab92747..c425bd824 100644
+--- a/src/XrdOss/XrdOssCache.cc
++++ b/src/XrdOss/XrdOssCache.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <dirent.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdOss/XrdOssConfig.cc b/src/XrdOss/XrdOssConfig.cc
+index 35ae48177..ea922b297 100644
+--- a/src/XrdOss/XrdOssConfig.cc
++++ b/src/XrdOss/XrdOssConfig.cc
+@@ -29,7 +29,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <dirent.h>
+ #include <fcntl.h>
+diff --git a/src/XrdOss/XrdOssCopy.cc b/src/XrdOss/XrdOssCopy.cc
+index 1b0846896..6870eea18 100644
+--- a/src/XrdOss/XrdOssCopy.cc
++++ b/src/XrdOss/XrdOssCopy.cc
+@@ -33,7 +33,6 @@
+ #include <string.h>
+ #include <time.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <utime.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+diff --git a/src/XrdOss/XrdOssCreate.cc b/src/XrdOss/XrdOssCreate.cc
+index b78ae8bca..d986f39ec 100644
+--- a/src/XrdOss/XrdOssCreate.cc
++++ b/src/XrdOss/XrdOssCreate.cc
+@@ -32,7 +32,6 @@
+ /*                             i n c l u d e s                                */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <strings.h>
+diff --git a/src/XrdOss/XrdOssMSS.cc b/src/XrdOss/XrdOssMSS.cc
+index 460263204..5e64e2d4b 100644
+--- a/src/XrdOss/XrdOssMSS.cc
++++ b/src/XrdOss/XrdOssMSS.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <dirent.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <strings.h>
+ #include <signal.h>
+diff --git a/src/XrdOss/XrdOssMio.cc b/src/XrdOss/XrdOssMio.cc
+index 3ba15104d..889fc83b7 100644
+--- a/src/XrdOss/XrdOssMio.cc
++++ b/src/XrdOss/XrdOssMio.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <stdio.h>
+ #include <sys/param.h>
+ #include <sys/types.h>
+diff --git a/src/XrdOss/XrdOssPath.cc b/src/XrdOss/XrdOssPath.cc
+index 95981ae83..14aa8eb33 100644
+--- a/src/XrdOss/XrdOssPath.cc
++++ b/src/XrdOss/XrdOssPath.cc
+@@ -32,7 +32,6 @@
+ #include <fcntl.h>
+ #include <limits.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <sys/param.h>
+diff --git a/src/XrdOss/XrdOssReloc.cc b/src/XrdOss/XrdOssReloc.cc
+index 1034fcc8a..11ba1a038 100644
+--- a/src/XrdOss/XrdOssReloc.cc
++++ b/src/XrdOss/XrdOssReloc.cc
+@@ -32,7 +32,6 @@
+ /*                             i n c l u d e s                                */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <strings.h>
+diff --git a/src/XrdOss/XrdOssRename.cc b/src/XrdOss/XrdOssRename.cc
+index 7c3ad9080..aa207ef2a 100644
+--- a/src/XrdOss/XrdOssRename.cc
++++ b/src/XrdOss/XrdOssRename.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <strings.h>
+ #include <limits.h>
+diff --git a/src/XrdOss/XrdOssSIgpfsT.cc b/src/XrdOss/XrdOssSIgpfsT.cc
+index 51278e71c..a57c842dd 100644
+--- a/src/XrdOss/XrdOssSIgpfsT.cc
++++ b/src/XrdOss/XrdOssSIgpfsT.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <strings.h>
+ #include <string.h>
+ #include <stdlib.h>
+diff --git a/src/XrdOss/XrdOssStage.cc b/src/XrdOss/XrdOssStage.cc
+index fb631383e..b8158edd9 100644
+--- a/src/XrdOss/XrdOssStage.cc
++++ b/src/XrdOss/XrdOssStage.cc
+@@ -38,7 +38,6 @@
+    SUN: -D_REENTRANT
+ */
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <strings.h>
+ #include <signal.h>
+diff --git a/src/XrdOss/XrdOssStat.cc b/src/XrdOss/XrdOssStat.cc
+index f28252d3e..b8408be71 100644
+--- a/src/XrdOss/XrdOssStat.cc
++++ b/src/XrdOss/XrdOssStat.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>
+diff --git a/src/XrdOss/XrdOssUnlink.cc b/src/XrdOss/XrdOssUnlink.cc
+index d9cd9e48e..31e72771d 100644
+--- a/src/XrdOss/XrdOssUnlink.cc
++++ b/src/XrdOss/XrdOssUnlink.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <strings.h>
+ #include <limits.h>
+diff --git a/src/XrdOuc/XrdOucBackTrace.cc b/src/XrdOuc/XrdOucBackTrace.cc
+index 8d3ffb0e4..2c2dbc789 100644
+--- a/src/XrdOuc/XrdOucBackTrace.cc
++++ b/src/XrdOuc/XrdOucBackTrace.cc
+@@ -30,7 +30,6 @@
+ #include <iostream>
+ #include <stdio.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <vector>
+ #include <sys/syscall.h>
+ 
+diff --git a/src/XrdOuc/XrdOucBuffer.cc b/src/XrdOuc/XrdOucBuffer.cc
+index 479e28a6d..21a1b64ce 100644
+--- a/src/XrdOuc/XrdOucBuffer.cc
++++ b/src/XrdOuc/XrdOucBuffer.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+   
+ #ifndef WIN32
+-#include <unistd.h>
+ #endif
+ #include <sys/types.h>
+ #include <stdlib.h>
+diff --git a/src/XrdOuc/XrdOucCacheReal.cc b/src/XrdOuc/XrdOucCacheReal.cc
+index e17f7a969..945953681 100644
+--- a/src/XrdOuc/XrdOucCacheReal.cc
++++ b/src/XrdOuc/XrdOucCacheReal.cc
+@@ -32,7 +32,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdOuc/XrdOucN2NLoader.cc b/src/XrdOuc/XrdOucN2NLoader.cc
+index 3ebbda9a9..cc8d76e03 100644
+--- a/src/XrdOuc/XrdOucN2NLoader.cc
++++ b/src/XrdOuc/XrdOucN2NLoader.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <errno.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+   
+diff --git a/src/XrdOuc/XrdOucN2No2p.cc b/src/XrdOuc/XrdOucN2No2p.cc
+index 79744403e..4824020e9 100644
+--- a/src/XrdOuc/XrdOucN2No2p.cc
++++ b/src/XrdOuc/XrdOucN2No2p.cc
+@@ -35,7 +35,6 @@
+ #include <stdio.h>
+ #include <string>
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include "XrdVersion.hh"
+ 
+diff --git a/src/XrdOuc/XrdOucNSWalk.cc b/src/XrdOuc/XrdOucNSWalk.cc
+index aabb6a9bc..80eceba7c 100644
+--- a/src/XrdOuc/XrdOucNSWalk.cc
++++ b/src/XrdOuc/XrdOucNSWalk.cc
+@@ -31,7 +31,6 @@
+ #include <ctype.h>
+ #include <string.h>
+ #include <dirent.h>
+-#include <unistd.h>
+ 
+ #include "XrdOuc/XrdOucNSWalk.hh"
+ #include "XrdOuc/XrdOucTList.hh"
+diff --git a/src/XrdOuc/XrdOucProg.cc b/src/XrdOuc/XrdOucProg.cc
+index 04159ffc6..4bb8282b7 100644
+--- a/src/XrdOuc/XrdOucProg.cc
++++ b/src/XrdOuc/XrdOucProg.cc
+@@ -31,7 +31,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ #else
+diff --git a/src/XrdOuc/XrdOucPsx.cc b/src/XrdOuc/XrdOucPsx.cc
+index 393b41137..38e8b7c1a 100644
+--- a/src/XrdOuc/XrdOucPsx.cc
++++ b/src/XrdOuc/XrdOucPsx.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <stdio.h>
+ #include <sys/param.h>
+diff --git a/src/XrdOuc/XrdOucReqID.cc b/src/XrdOuc/XrdOucReqID.cc
+index 48022508b..eabebdbce 100644
+--- a/src/XrdOuc/XrdOucReqID.cc
++++ b/src/XrdOuc/XrdOucReqID.cc
+@@ -36,7 +36,6 @@
+ #include "XrdSys/XrdWin32.hh"
+ #endif
+ #include <time.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+   
+diff --git a/src/XrdOuc/XrdOucSFVec.hh b/src/XrdOuc/XrdOucSFVec.hh
+index edd7e296c..8df061c0f 100644
+--- a/src/XrdOuc/XrdOucSFVec.hh
++++ b/src/XrdOuc/XrdOucSFVec.hh
+@@ -29,7 +29,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ 
+ //-----------------------------------------------------------------------------
+ //! XrdOucSFVec
+diff --git a/src/XrdOuc/XrdOucStream.cc b/src/XrdOuc/XrdOucStream.cc
+index 9bbb51b8d..04ae7b11d 100644
+--- a/src/XrdOuc/XrdOucStream.cc
++++ b/src/XrdOuc/XrdOucStream.cc
+@@ -34,7 +34,6 @@
+ #include <stdio.h>
+ #ifndef WIN32
+ #include <poll.h>
+-#include <unistd.h>
+ #include <strings.h>
+ #if !defined(__linux__) && !defined(__CYGWIN__)
+ #ifdef __FreeBSD__
+diff --git a/src/XrdOuc/XrdOucSxeq.cc b/src/XrdOuc/XrdOucSxeq.cc
+index 003bcd2dd..375102055 100644
+--- a/src/XrdOuc/XrdOucSxeq.cc
++++ b/src/XrdOuc/XrdOucSxeq.cc
+@@ -33,7 +33,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+diff --git a/src/XrdOuc/XrdOucTokenizer.cc b/src/XrdOuc/XrdOucTokenizer.cc
+index b51f55847..bf95b11d7 100644
+--- a/src/XrdOuc/XrdOucTokenizer.cc
++++ b/src/XrdOuc/XrdOucTokenizer.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #ifndef WIN32
+-#include <unistd.h>
+ #endif
+ #include <ctype.h>
+ #include <stdlib.h>
+diff --git a/src/XrdPosix/XrdPosix.cc b/src/XrdPosix/XrdPosix.cc
+index f582eb461..8e1862144 100644
+--- a/src/XrdPosix/XrdPosix.cc
++++ b/src/XrdPosix/XrdPosix.cc
+@@ -35,7 +35,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <sys/uio.h>
+ 
+ #include "XrdSys/XrdSysHeaders.hh"
+diff --git a/src/XrdPosix/XrdPosixConfig.hh b/src/XrdPosix/XrdPosixConfig.hh
+index 42a6830da..aff353eb7 100644
+--- a/src/XrdPosix/XrdPosixConfig.hh
++++ b/src/XrdPosix/XrdPosixConfig.hh
+@@ -31,7 +31,6 @@
+ /* Modified by Frank Winklmeier to add the full Posix file system definition. */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ class XrdOucEnv;
+diff --git a/src/XrdPosix/XrdPosixDir.hh b/src/XrdPosix/XrdPosixDir.hh
+index 26201d0a4..79f62b642 100644
+--- a/src/XrdPosix/XrdPosixDir.hh
++++ b/src/XrdPosix/XrdPosixDir.hh
+@@ -39,7 +39,6 @@
+ #endif
+ #endif
+ 
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdPosix/XrdPosixAdmin.hh"
+diff --git a/src/XrdPosix/XrdPosixExtern.hh b/src/XrdPosix/XrdPosixExtern.hh
+index 3356ecba7..424ca6eb8 100644
+--- a/src/XrdPosix/XrdPosixExtern.hh
++++ b/src/XrdPosix/XrdPosixExtern.hh
+@@ -70,7 +70,6 @@ struct statvfs;
+ 
+ #include <dirent.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdPosix/XrdPosixOsDep.hh"
+diff --git a/src/XrdPosix/XrdPosixLinkage.hh b/src/XrdPosix/XrdPosixLinkage.hh
+index 241222fa7..ab85edf0e 100644
+--- a/src/XrdPosix/XrdPosixLinkage.hh
++++ b/src/XrdPosix/XrdPosixLinkage.hh
+@@ -37,7 +37,6 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ 
+ #include "XrdPosix/XrdPosixOsDep.hh"
+ #include "XrdSys/XrdSysPlatform.hh"
+diff --git a/src/XrdPosix/XrdPosixPreload.cc b/src/XrdPosix/XrdPosixPreload.cc
+index 3169b46bb..b51114613 100644
+--- a/src/XrdPosix/XrdPosixPreload.cc
++++ b/src/XrdPosix/XrdPosixPreload.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <sys/types.h>
+ #include <stdarg.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+ 
+ #include "XrdPosix/XrdPosixLinkage.hh"
+diff --git a/src/XrdPosix/XrdPosixPreload32.cc b/src/XrdPosix/XrdPosixPreload32.cc
+index fa2343afc..2a677ceee 100644
+--- a/src/XrdPosix/XrdPosixPreload32.cc
++++ b/src/XrdPosix/XrdPosixPreload32.cc
+@@ -48,7 +48,6 @@
+ #include <stdarg.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+ 
+ #if defined(__APPLE__) || defined(__FreeBSD__)
+diff --git a/src/XrdPosix/XrdPosixXrootd.hh b/src/XrdPosix/XrdPosixXrootd.hh
+index 1be594904..0591ff404 100644
+--- a/src/XrdPosix/XrdPosixXrootd.hh
++++ b/src/XrdPosix/XrdPosixXrootd.hh
+@@ -32,7 +32,6 @@
+ /******************************************************************************/
+ 
+ #include <dirent.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/statvfs.h>
+ #include <sys/types.h>
+diff --git a/src/XrdPss/XrdPss.cc b/src/XrdPss/XrdPss.cc
+index 4ce770009..8021a0775 100644
+--- a/src/XrdPss/XrdPss.cc
++++ b/src/XrdPss/XrdPss.cc
+@@ -31,7 +31,6 @@
+ /*                             I n c l u d e s                                */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <signal.h>
+diff --git a/src/XrdPss/XrdPss.hh b/src/XrdPss/XrdPss.hh
+index 97c9058a6..bc77f596f 100644
+--- a/src/XrdPss/XrdPss.hh
++++ b/src/XrdPss/XrdPss.hh
+@@ -31,7 +31,6 @@
+ /******************************************************************************/
+ 
+ #include <errno.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <vector>
+ #include "XrdSys/XrdSysHeaders.hh"
+diff --git a/src/XrdPss/XrdPssAio.cc b/src/XrdPss/XrdPssAio.cc
+index f747bce76..27153fe7b 100644
+--- a/src/XrdPss/XrdPssAio.cc
++++ b/src/XrdPss/XrdPssAio.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <stdio.h>
+-#include <unistd.h>
+ 
+ #include "XrdPosix/XrdPosixXrootd.hh"
+ #include "XrdPss/XrdPss.hh"
+diff --git a/src/XrdPss/XrdPssConfig.cc b/src/XrdPss/XrdPssConfig.cc
+index 694be1e66..1f107cd2b 100644
+--- a/src/XrdPss/XrdPssConfig.cc
++++ b/src/XrdPss/XrdPssConfig.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <stdio.h>
+ #include <string.h>
+diff --git a/src/XrdRmc/XrdRmcReal.cc b/src/XrdRmc/XrdRmcReal.cc
+index 54d663b9e..035cef3b4 100644
+--- a/src/XrdRmc/XrdRmcReal.cc
++++ b/src/XrdRmc/XrdRmcReal.cc
+@@ -32,7 +32,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdRootd/XrdRootdProtocol.cc b/src/XrdRootd/XrdRootdProtocol.cc
+index cec9a3d36..c58f00d25 100644
+--- a/src/XrdRootd/XrdRootdProtocol.cc
++++ b/src/XrdRootd/XrdRootdProtocol.cc
+@@ -29,7 +29,6 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <netinet/in.h>
+ 
+diff --git a/src/XrdSec/XrdSecClient.cc b/src/XrdSec/XrdSecClient.cc
+index 04563de4e..1282a3358 100644
+--- a/src/XrdSec/XrdSecClient.cc
++++ b/src/XrdSec/XrdSecClient.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <netdb.h>
+diff --git a/src/XrdSec/XrdSecServer.cc b/src/XrdSec/XrdSecServer.cc
+index cdf1658ff..0f8deee67 100644
+--- a/src/XrdSec/XrdSecServer.cc
++++ b/src/XrdSec/XrdSecServer.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdSec/XrdSecTLayer.cc b/src/XrdSec/XrdSecTLayer.cc
+index 2a04f21cb..8e801d248 100644
+--- a/src/XrdSec/XrdSecTLayer.cc
++++ b/src/XrdSec/XrdSecTLayer.cc
+@@ -34,7 +34,6 @@
+ #include <fcntl.h>
+ #include <poll.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ 
+ #include "XrdOuc/XrdOucErrInfo.hh"
+ #include "XrdSec/XrdSecTLayer.hh"
+diff --git a/src/XrdSec/XrdSectestClient.cc b/src/XrdSec/XrdSectestClient.cc
+index 9ce1d66e2..425803f62 100644
+--- a/src/XrdSec/XrdSectestClient.cc
++++ b/src/XrdSec/XrdSectestClient.cc
+@@ -33,7 +33,6 @@
+    See the help() function for an explanation of the above.
+ */
+   
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdSec/XrdSectestServer.cc b/src/XrdSec/XrdSectestServer.cc
+index c65d308b0..a2d16a426 100644
+--- a/src/XrdSec/XrdSectestServer.cc
++++ b/src/XrdSec/XrdSectestServer.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <strings.h>
+diff --git a/src/XrdSecgsi/XrdSecProtocolgsi.cc b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+index 254679315..5cc26af01 100644
+--- a/src/XrdSecgsi/XrdSecProtocolgsi.cc
++++ b/src/XrdSecgsi/XrdSecProtocolgsi.cc
+@@ -26,7 +26,6 @@
+ /*                                                                            */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdSecgsi/XrdSecgsiAuthzFunVO.cc b/src/XrdSecgsi/XrdSecgsiAuthzFunVO.cc
+index ad16847e6..8c70e4665 100644
+--- a/src/XrdSecgsi/XrdSecgsiAuthzFunVO.cc
++++ b/src/XrdSecgsi/XrdSecgsiAuthzFunVO.cc
+@@ -68,7 +68,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include "XrdVersion.hh"
+ 
+diff --git a/src/XrdSecgsi/XrdSecgsiProxy.cc b/src/XrdSecgsi/XrdSecgsiProxy.cc
+index 96cf9b39f..90ac0187a 100644
+--- a/src/XrdSecgsi/XrdSecgsiProxy.cc
++++ b/src/XrdSecgsi/XrdSecgsiProxy.cc
+@@ -38,7 +38,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
+-#include <unistd.h>
+ #include <pwd.h>
+ #include <time.h>
+ 
+diff --git a/src/XrdSeckrb5/XrdSecProtocolkrb5.cc b/src/XrdSeckrb5/XrdSecProtocolkrb5.cc
+index 132708bec..9abc75e7a 100644
+--- a/src/XrdSeckrb5/XrdSecProtocolkrb5.cc
++++ b/src/XrdSeckrb5/XrdSecProtocolkrb5.cc
+@@ -31,7 +31,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdSecpwd/XrdSecProtocolpwd.cc b/src/XrdSecpwd/XrdSecProtocolpwd.cc
+index b2250dfc0..359b8c38a 100644
+--- a/src/XrdSecpwd/XrdSecProtocolpwd.cc
++++ b/src/XrdSecpwd/XrdSecProtocolpwd.cc
+@@ -26,7 +26,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdSecpwd/XrdSecpwdSrvAdmin.cc b/src/XrdSecpwd/XrdSecpwdSrvAdmin.cc
+index 7620a9854..1f8604ce4 100644
+--- a/src/XrdSecpwd/XrdSecpwdSrvAdmin.cc
++++ b/src/XrdSecpwd/XrdSecpwdSrvAdmin.cc
+@@ -77,7 +77,6 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+ #include <errno.h>
+diff --git a/src/XrdSecsss/XrdSecProtocolsss.cc b/src/XrdSecsss/XrdSecProtocolsss.cc
+index 700023979..0cc99a509 100644
+--- a/src/XrdSecsss/XrdSecProtocolsss.cc
++++ b/src/XrdSecsss/XrdSecProtocolsss.cc
+@@ -36,7 +36,6 @@
+ #include <strings.h>
+ #include <stdio.h>
+ #include <sys/param.h>
+-#include <unistd.h>
+ 
+ #include "XrdVersion.hh"
+ 
+diff --git a/src/XrdSecunix/XrdSecProtocolunix.cc b/src/XrdSecunix/XrdSecProtocolunix.cc
+index 875b0f227..6d427bb92 100644
+--- a/src/XrdSecunix/XrdSecProtocolunix.cc
++++ b/src/XrdSecunix/XrdSecProtocolunix.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/src/XrdSfs/XrdSfsAio.hh b/src/XrdSfs/XrdSfsAio.hh
+index ac04a785d..7fe1181b0 100644
+--- a/src/XrdSfs/XrdSfsAio.hh
++++ b/src/XrdSfs/XrdSfsAio.hh
+@@ -33,7 +33,6 @@
+ #include <signal.h>
+ #include <sys/types.h>
+ // _POSIX_ASYNCHRONOUS_IO, if it is defined, is in unistd.h.
+-#include <unistd.h>
+ #ifdef _POSIX_ASYNCHRONOUS_IO
+ #ifdef __APPLE__
+ #include <AvailabilityMacros.h>
+diff --git a/src/XrdSfs/XrdSfsDio.hh b/src/XrdSfs/XrdSfsDio.hh
+index f9dab152b..c9624153e 100644
+--- a/src/XrdSfs/XrdSfsDio.hh
++++ b/src/XrdSfs/XrdSfsDio.hh
+@@ -30,7 +30,6 @@
+ /******************************************************************************/
+ 
+ #include <sys/types.h>
+-#include <unistd.h>
+ 
+ #include "XrdOuc/XrdOucSFVec.hh"
+ 
+diff --git a/src/XrdSfs/XrdSfsNative.cc b/src/XrdSfs/XrdSfsNative.cc
+index 370a9dc21..82e362291 100644
+--- a/src/XrdSfs/XrdSfsNative.cc
++++ b/src/XrdSfs/XrdSfsNative.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #include <sys/types.h>
+-#include <unistd.h>
+ #include <dirent.h>
+ #include <fcntl.h>
+ #include <memory.h>
+diff --git a/src/XrdSsi/XrdSsiClient.cc b/src/XrdSsi/XrdSsiClient.cc
+index 50a535758..5af804be4 100644
+--- a/src/XrdSsi/XrdSsiClient.cc
++++ b/src/XrdSsi/XrdSsiClient.cc
+@@ -33,7 +33,6 @@
+ #include <string>
+ #include <string.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+   
+ #include "Xrd/XrdScheduler.hh"
+diff --git a/src/XrdSsi/XrdSsiSfs.cc b/src/XrdSsi/XrdSsiSfs.cc
+index 3b3e6b488..914d7ed87 100644
+--- a/src/XrdSsi/XrdSsiSfs.cc
++++ b/src/XrdSsi/XrdSsiSfs.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <dirent.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/src/XrdSsi/XrdSsiSfsConfig.cc b/src/XrdSsi/XrdSsiSfsConfig.cc
+index bf6d5ae8f..4209792a2 100644
+--- a/src/XrdSsi/XrdSsiSfsConfig.cc
++++ b/src/XrdSsi/XrdSsiSfsConfig.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <string.h>
+diff --git a/src/XrdSsi/XrdSsiShMam.cc b/src/XrdSsi/XrdSsiShMam.cc
+index 61218165d..38554f3f7 100644
+--- a/src/XrdSsi/XrdSsiShMam.cc
++++ b/src/XrdSsi/XrdSsiShMam.cc
+@@ -33,7 +33,6 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/file.h>
+ #include <sys/mman.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdSsi/XrdSsiStat.cc b/src/XrdSsi/XrdSsiStat.cc
+index 610ad529f..8c0347757 100644
+--- a/src/XrdSsi/XrdSsiStat.cc
++++ b/src/XrdSsi/XrdSsiStat.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+ 
+ #include "XrdVersion.hh"
+diff --git a/src/XrdSut/XrdSutAux.cc b/src/XrdSut/XrdSutAux.cc
+index b50d32f53..27e9ca180 100644
+--- a/src/XrdSut/XrdSutAux.cc
++++ b/src/XrdSut/XrdSutAux.cc
+@@ -29,7 +29,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <time.h>
+ #include <pwd.h>
+diff --git a/src/XrdSut/XrdSutPFCache.cc b/src/XrdSut/XrdSutPFCache.cc
+index 3084892ce..9df041faf 100644
+--- a/src/XrdSut/XrdSutPFCache.cc
++++ b/src/XrdSut/XrdSutPFCache.cc
+@@ -30,7 +30,6 @@
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <unistd.h>
+ #include <time.h>
+ 
+ #include "XrdSut/XrdSutPFCache.hh"
+diff --git a/src/XrdSut/XrdSutPFile.cc b/src/XrdSut/XrdSutPFile.cc
+index 8647846eb..708eaae46 100644
+--- a/src/XrdSut/XrdSutPFile.cc
++++ b/src/XrdSut/XrdSutPFile.cc
+@@ -28,7 +28,6 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdSut/XrdSutRndm.cc b/src/XrdSut/XrdSutRndm.cc
+index de508147e..4f30eb29f 100644
+--- a/src/XrdSut/XrdSutRndm.cc
++++ b/src/XrdSut/XrdSutRndm.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <string.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdSys/XrdSysDNS.cc b/src/XrdSys/XrdSysDNS.cc
+index 89701eaf7..5a6e9a0e0 100644
+--- a/src/XrdSys/XrdSysDNS.cc
++++ b/src/XrdSys/XrdSysDNS.cc
+@@ -35,7 +35,6 @@
+ #include <netdb.h>
+ #include <strings.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+diff --git a/src/XrdSys/XrdSysError.cc b/src/XrdSys/XrdSysError.cc
+index f5e162741..e85605eea 100644
+--- a/src/XrdSys/XrdSysError.cc
++++ b/src/XrdSys/XrdSysError.cc
+@@ -29,7 +29,6 @@
+ 
+ #include <ctype.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+diff --git a/src/XrdSys/XrdSysError.hh b/src/XrdSys/XrdSysError.hh
+index d965a7550..10ea093d7 100644
+--- a/src/XrdSys/XrdSysError.hh
++++ b/src/XrdSys/XrdSysError.hh
+@@ -31,7 +31,6 @@
+  
+ #include <stdlib.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <string.h>
+ #include <strings.h>
+ #else
+diff --git a/src/XrdSys/XrdSysFAttrBsd.icc b/src/XrdSys/XrdSysFAttrBsd.icc
+index 5be2f74d3..20a947554 100644
+--- a/src/XrdSys/XrdSysFAttrBsd.icc
++++ b/src/XrdSys/XrdSysFAttrBsd.icc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/extattr.h>
+ 
+diff --git a/src/XrdSys/XrdSysFAttrLnx.icc b/src/XrdSys/XrdSysFAttrLnx.icc
+index 75808f223..d64ebe671 100644
+--- a/src/XrdSys/XrdSysFAttrLnx.icc
++++ b/src/XrdSys/XrdSysFAttrLnx.icc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/xattr.h>
+ 
+diff --git a/src/XrdSys/XrdSysFAttrMac.icc b/src/XrdSys/XrdSysFAttrMac.icc
+index 8c20765fa..2166c45b1 100644
+--- a/src/XrdSys/XrdSysFAttrMac.icc
++++ b/src/XrdSys/XrdSysFAttrMac.icc
+@@ -31,7 +31,6 @@
+ #include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/xattr.h>
+ 
+diff --git a/src/XrdSys/XrdSysFAttrSun.icc b/src/XrdSys/XrdSysFAttrSun.icc
+index 67c380171..56baaf1d4 100644
+--- a/src/XrdSys/XrdSysFAttrSun.icc
++++ b/src/XrdSys/XrdSysFAttrSun.icc
+@@ -32,7 +32,6 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdSys/XrdSysFD.hh b/src/XrdSys/XrdSysFD.hh
+index 561fed037..898a2e9dc 100644
+--- a/src/XrdSys/XrdSysFD.hh
++++ b/src/XrdSys/XrdSysFD.hh
+@@ -39,7 +39,6 @@
+ 
+ #include <sys/types.h>
+ #include <sys/socket.h>
+-#include <unistd.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <dirent.h>
+diff --git a/src/XrdSys/XrdSysFallocate.cc b/src/XrdSys/XrdSysFallocate.cc
+index 4619fd784..e29dd66a7 100644
+--- a/src/XrdSys/XrdSysFallocate.cc
++++ b/src/XrdSys/XrdSysFallocate.cc
+@@ -27,7 +27,6 @@
+ #ifdef __APPLE__
+ 
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+diff --git a/src/XrdSys/XrdSysIOEventsPollPoll.icc b/src/XrdSys/XrdSysIOEventsPollPoll.icc
+index 4e0cd157d..9bfc8be3b 100644
+--- a/src/XrdSys/XrdSysIOEventsPollPoll.icc
++++ b/src/XrdSys/XrdSysIOEventsPollPoll.icc
+@@ -30,7 +30,6 @@
+ #if !defined(__APPLE__) && !defined(__FreeBSD__)
+ #include <malloc.h>
+ #endif
+-#include <unistd.h>
+ #include <stdlib.h>
+ #include <signal.h>
+   
+diff --git a/src/XrdSys/XrdSysLinuxSemaphore.hh b/src/XrdSys/XrdSysLinuxSemaphore.hh
+index f0f299b06..f02b1cff5 100644
+--- a/src/XrdSys/XrdSysLinuxSemaphore.hh
++++ b/src/XrdSys/XrdSysLinuxSemaphore.hh
+@@ -30,7 +30,6 @@
+ #include <pthread.h>
+ #include <linux/futex.h>
+ #include <sys/syscall.h>
+-#include <unistd.h>
+ #include <cerrno>
+ #include <exception>
+ #include <string>
+diff --git a/src/XrdSys/XrdSysLogger.cc b/src/XrdSys/XrdSysLogger.cc
+index ed8544476..887725e7c 100644
+--- a/src/XrdSys/XrdSysLogger.cc
++++ b/src/XrdSys/XrdSysLogger.cc
+@@ -37,7 +37,6 @@
+ #include <sys/types.h>
+ #ifndef WIN32
+ #include <dirent.h>
+-#include <unistd.h>
+ #include <strings.h>
+ #include <sys/param.h>
+ #include <sys/termios.h>
+diff --git a/src/XrdSys/XrdSysLogger.hh b/src/XrdSys/XrdSysLogger.hh
+index 0a2b8a13d..bb4d65d3e 100644
+--- a/src/XrdSys/XrdSysLogger.hh
++++ b/src/XrdSys/XrdSysLogger.hh
+@@ -31,7 +31,6 @@
+ 
+ #include <stdlib.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <string.h>
+ #include <strings.h>
+ #else
+diff --git a/src/XrdSys/XrdSysLogging.cc b/src/XrdSys/XrdSysLogging.cc
+index b6e76c2c0..da46f4f35 100644
+--- a/src/XrdSys/XrdSysLogging.cc
++++ b/src/XrdSys/XrdSysLogging.cc
+@@ -29,7 +29,6 @@
+ 
+ #include <stddef.h>
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <stdio.h>
+ 
+ #include "XrdSys/XrdSysE2T.hh"
+diff --git a/src/XrdSys/XrdSysPlatform.cc b/src/XrdSys/XrdSysPlatform.cc
+index d5d9fe1c1..3308711ed 100644
+--- a/src/XrdSys/XrdSysPlatform.cc
++++ b/src/XrdSys/XrdSysPlatform.cc
+@@ -30,7 +30,6 @@
+ #include <stdio.h>
+ #include <string.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #endif
+ #include <sys/types.h>
+diff --git a/src/XrdSys/XrdSysPriv.cc b/src/XrdSys/XrdSysPriv.cc
+index f17e974ef..3e817074a 100644
+--- a/src/XrdSys/XrdSysPriv.cc
++++ b/src/XrdSys/XrdSysPriv.cc
+@@ -44,7 +44,6 @@
+ #include <stdio.h>
+ #include "XrdSys/XrdSysHeaders.hh"
+ #include "XrdSys/XrdSysPwd.hh"
+-#include <unistd.h>
+ #include <pwd.h>
+ #include <errno.h>
+ 
+diff --git a/src/XrdSys/XrdSysPthread.cc b/src/XrdSys/XrdSysPthread.cc
+index 39addf6f4..f1e10f053 100644
+--- a/src/XrdSys/XrdSysPthread.cc
++++ b/src/XrdSys/XrdSysPthread.cc
+@@ -30,7 +30,6 @@
+ #include <errno.h>
+ #include <pthread.h>
+ #ifndef WIN32
+-#include <unistd.h>
+ #include <sys/time.h>
+ #else
+ #undef ETIMEDOUT       // Make sure that the definition from Winsock2.h is used ... 
+diff --git a/src/XrdSys/XrdSysTimer.cc b/src/XrdSys/XrdSysTimer.cc
+index 1f378adb4..913969798 100644
+--- a/src/XrdSys/XrdSysTimer.cc
++++ b/src/XrdSys/XrdSysTimer.cc
+@@ -28,7 +28,6 @@
+ /******************************************************************************/
+ 
+ #ifndef WIN32
+-#include <unistd.h>
+ #else
+ #include "XrdSys/XrdWin32.hh"
+ #endif
+diff --git a/src/XrdSys/XrdSysUtils.cc b/src/XrdSys/XrdSysUtils.cc
+index 994ca5691..cd2db46e7 100644
+--- a/src/XrdSys/XrdSysUtils.cc
++++ b/src/XrdSys/XrdSysUtils.cc
+@@ -34,7 +34,6 @@
+ #include <stdio.h>
+ #include <signal.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/param.h>
+ 
+ #ifdef __APPLE__
+diff --git a/src/XrdXml/XrdXmlMetaLink.cc b/src/XrdXml/XrdXmlMetaLink.cc
+index 05ef61310..ee663b279 100644
+--- a/src/XrdXml/XrdXmlMetaLink.cc
++++ b/src/XrdXml/XrdXmlMetaLink.cc
+@@ -29,7 +29,6 @@
+ 
+ #include <ctype.h>
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <limits.h>
+ 
+ #include "XrdSys/XrdSysAtomics.hh"
+diff --git a/src/XrdXml/XrdXmlRdrTiny.cc b/src/XrdXml/XrdXmlRdrTiny.cc
+index 45196f02a..94a0a5a2e 100644
+--- a/src/XrdXml/XrdXmlRdrTiny.cc
++++ b/src/XrdXml/XrdXmlRdrTiny.cc
+@@ -30,7 +30,6 @@
+ #include <ctype.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <iostream>
+diff --git a/src/XrdXrootd/XrdXrootdAdmin.cc b/src/XrdXrootd/XrdXrootdAdmin.cc
+index c88fb5dd6..375f5f4bf 100644
+--- a/src/XrdXrootd/XrdXrootdAdmin.cc
++++ b/src/XrdXrootd/XrdXrootdAdmin.cc
+@@ -31,7 +31,6 @@
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+ 
+diff --git a/src/XrdXrootd/XrdXrootdAio.cc b/src/XrdXrootd/XrdXrootdAio.cc
+index e898f6a14..9d5ce4636 100644
+--- a/src/XrdXrootd/XrdXrootdAio.cc
++++ b/src/XrdXrootd/XrdXrootdAio.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+   
+-#include <unistd.h>
+ 
+ #include "Xrd/XrdBuffer.hh"
+ #include "Xrd/XrdLink.hh"
+diff --git a/src/XrdXrootd/XrdXrootdConfig.cc b/src/XrdXrootd/XrdXrootdConfig.cc
+index 429365ff3..c59c9d5f5 100644
+--- a/src/XrdXrootd/XrdXrootdConfig.cc
++++ b/src/XrdXrootd/XrdXrootdConfig.cc
+@@ -27,7 +27,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+  
+-#include <unistd.h>
+ #include <ctype.h>
+ #include <fcntl.h>
+ #include <string>
+diff --git a/src/XrdXrootd/XrdXrootdFile.cc b/src/XrdXrootd/XrdXrootdFile.cc
+index d4bedcef7..e5a95e9ce 100644
+--- a/src/XrdXrootd/XrdXrootdFile.cc
++++ b/src/XrdXrootd/XrdXrootdFile.cc
+@@ -30,7 +30,6 @@
+ #include <inttypes.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <unistd.h>
+ #include <netinet/in.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+diff --git a/src/XrdXrootd/XrdXrootdMonFMap.cc b/src/XrdXrootd/XrdXrootdMonFMap.cc
+index 5d23ed05f..36396640c 100644
+--- a/src/XrdXrootd/XrdXrootdMonFMap.cc
++++ b/src/XrdXrootd/XrdXrootdMonFMap.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <errno.h>
+ #include <string.h>
+-#include <unistd.h>
+ 
+ #include "XrdSys/XrdSysPlatform.hh"
+ 
+diff --git a/src/XrdXrootd/XrdXrootdMonitor.cc b/src/XrdXrootd/XrdXrootdMonitor.cc
+index cbc44a026..e69d42ee8 100644
+--- a/src/XrdXrootd/XrdXrootdMonitor.cc
++++ b/src/XrdXrootd/XrdXrootdMonitor.cc
+@@ -32,7 +32,6 @@
+ #include <cstdio>
+ #include <stdlib.h>
+ #include <time.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ #if !defined(__APPLE__) && !defined(__FreeBSD__)
+ #include <malloc.h>
+diff --git a/src/XrdXrootd/XrdXrootdPrepare.cc b/src/XrdXrootd/XrdXrootdPrepare.cc
+index 67cba640c..3c1ffef1c 100644
+--- a/src/XrdXrootd/XrdXrootdPrepare.cc
++++ b/src/XrdXrootd/XrdXrootdPrepare.cc
+@@ -30,7 +30,6 @@
+ 
+ #include <dirent.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <strings.h>
+diff --git a/src/XrdXrootd/XrdXrootdProtocol.hh b/src/XrdXrootd/XrdXrootdProtocol.hh
+index 8d6414d14..7a099fe39 100644
+--- a/src/XrdXrootd/XrdXrootdProtocol.hh
++++ b/src/XrdXrootd/XrdXrootdProtocol.hh
+@@ -30,7 +30,6 @@
+ /******************************************************************************/
+  
+ #include <stdlib.h>
+-#include <unistd.h>
+ #include <sys/types.h>
+ 
+ #include "XrdSys/XrdSysError.hh"
+diff --git a/src/XrdXrootd/XrdXrootdResponse.hh b/src/XrdXrootd/XrdXrootdResponse.hh
+index 76647c3ed..ff674df92 100644
+--- a/src/XrdXrootd/XrdXrootdResponse.hh
++++ b/src/XrdXrootd/XrdXrootdResponse.hh
+@@ -30,7 +30,6 @@
+ /******************************************************************************/
+ 
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/uio.h>
+   
+ #include "XProtocol/XProtocol.hh"
+diff --git a/src/XrdXrootd/XrdXrootdTransit.cc b/src/XrdXrootd/XrdXrootdTransit.cc
+index 98f6eb3e1..adc370874 100644
+--- a/src/XrdXrootd/XrdXrootdTransit.cc
++++ b/src/XrdXrootd/XrdXrootdTransit.cc
+@@ -29,7 +29,6 @@
+ /******************************************************************************/
+ 
+ #include <string.h>
+-#include <unistd.h>
+ #include <sys/uio.h>
+ 
+ #include "XProtocol/XProtocol.hh"
+diff --git a/src/XrdXrootd/XrdXrootdXeqAio.cc b/src/XrdXrootd/XrdXrootdXeqAio.cc
+index 852b6510b..bd26e7572 100644
+--- a/src/XrdXrootd/XrdXrootdXeqAio.cc
++++ b/src/XrdXrootd/XrdXrootdXeqAio.cc
+@@ -28,7 +28,6 @@
+ /* specific prior written permission of the institution or contributor.       */
+ /******************************************************************************/
+ 
+-#include <unistd.h>
+ 
+ #include "Xrd/XrdBuffer.hh"
+ #include "Xrd/XrdLink.hh"
+diff --git a/tests/XrdClTests/ThreadingTest.cc b/tests/XrdClTests/ThreadingTest.cc
+index 1bf358965..bd271ec12 100644
+--- a/tests/XrdClTests/ThreadingTest.cc
++++ b/tests/XrdClTests/ThreadingTest.cc
+@@ -24,7 +24,6 @@
+ #include "XrdCl/XrdClDefaultEnv.hh"
+ #include "XrdCl/XrdClUtils.hh"
+ #include <pthread.h>
+-#include <unistd.h>
+ #include <cstdlib>
+ #include <sys/types.h>
+ #include <sys/wait.h>
+diff --git a/tests/XrdClTests/tls/xrdsrv-tls.cc b/tests/XrdClTests/tls/xrdsrv-tls.cc
+index 83aa4db19..508ee5361 100644
+--- a/tests/XrdClTests/tls/xrdsrv-tls.cc
++++ b/tests/XrdClTests/tls/xrdsrv-tls.cc
+@@ -3,14 +3,12 @@
+ #include <stdlib.h>
+ #include <netinet/in.h>
+ #include <string>
+-#include <unistd.h>
+ 
+ #include <memory>
+ #include <mutex>
+ #include <sstream>
+ 
+ #include <stdio.h>
+-#include <unistd.h>
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
+ #include <openssl/ssl.h>
+diff --git a/tests/XrdSsiTests/XrdShMap.cc b/tests/XrdSsiTests/XrdShMap.cc
+index 4bf1478e3..06432c959 100644
+--- a/tests/XrdSsiTests/XrdShMap.cc
++++ b/tests/XrdSsiTests/XrdShMap.cc
+@@ -32,7 +32,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <unistd.h>
+ #include <errno.h>
+ #include <string>
+ #include <string.h>
+diff --git a/tests/common/Server.cc b/tests/common/Server.cc
+index 89701c28f..162420b28 100644
+--- a/tests/common/Server.cc
++++ b/tests/common/Server.cc
+@@ -26,7 +26,6 @@
+ #include <sys/socket.h>
+ #include <sys/types.h>
+ #include <arpa/inet.h>
+-#include <unistd.h>
+ 
+ 
+ namespace XrdClTests
+diff --git a/tests/common/Utils.hh b/tests/common/Utils.hh
+index 05e15b74f..ecdd9eca6 100644
+--- a/tests/common/Utils.hh
++++ b/tests/common/Utils.hh
+@@ -19,7 +19,6 @@
+ #ifndef UTILS_HH
+ #define UTILS_HH
+ 
+-#include <unistd.h>
+ #include <stdint.h>
+ #include <zlib.h>
+ #include <string>

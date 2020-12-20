@@ -9,6 +9,7 @@ source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
   sha256: 3eff7b8a2c136304a91f6f7c3c5920af345af2075613bf030c7b4b53bb8996d9
   patches:
+    - patches/fix-windows.diff  # [win]
     - patches/0001-Fix-cross-compilation.patch
 
 build:
