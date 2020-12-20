@@ -29,21 +29,21 @@ requirements:
   host:
     - openssl
     - python
-    - readline
+    - readline  # [unix]
     - libxml2
-    - libuuid  # [not osx]
+    - libuuid  # [linux]
     - libcurl
     - krb5
     - zlib
-    - ncurses
+    - ncurses  # [unix]
   run:
     - openssl
     - python
-    - readline
+    - readline  # [unix]
     - libxml2
     - krb5
     - zlib
-    - ncurses
+    - ncurses  # [unix]
 
 test:
   imports:
