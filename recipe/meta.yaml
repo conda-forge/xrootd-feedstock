@@ -8,8 +8,6 @@ package:
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
   sha256: 5568e0438018aa03e2737f322f4cc572223296927d57ded04590d6134aeab482
-  patches:
-    - patches/0001-Fix-cross-compilation.patch
 
 build:
   number: 0
