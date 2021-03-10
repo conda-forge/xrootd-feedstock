@@ -1,5 +1,5 @@
 {% set name = "xrootd" %}
-{% set version = "5.1.0" %}
+{% set version = "5.1.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: 5568e0438018aa03e2737f322f4cc572223296927d57ded04590d6134aeab482
+  sha256: 02a75ca06d120480f32ae3ad40909090b3a93f9fa44f3333b5c4b52121dcf432
 
 build:
   number: 0
