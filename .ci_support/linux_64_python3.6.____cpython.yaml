@@ -15,7 +15,7 @@ cxx_compiler_version:
 docker_image:
 - quay.io/condaforge/linux-anvil-comp7
 krb5:
-- 1.17.1
+- '1.19'
 libcurl:
 - '7'
 libuuid:
@@ -49,7 +49,7 @@ pin_run_as_build:
 python:
 - 3.6.* *_cpython
 readline:
-- '8.0'
+- '8'
 target_platform:
 - linux-64
 zip_keys:
