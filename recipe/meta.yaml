@@ -49,6 +49,8 @@ test:
   imports:
     - XRootD.client
     - pyxrootd
+  commands:
+    - xrdcp root://eospublic.cern.ch//eos/root-eos/cms_opendata_2012_nanoaod/Run2012B_DoubleMuParked.root - > /dev/null
 
 about:
   home: http://xrootd.org/
