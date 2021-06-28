@@ -8,9 +8,11 @@ package:
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
   sha256: 43c8346d04bd9e4ff699db48a87fff06920235a2a8c90ddda8c94bb98fdfce96
+  patches:
+    - patches/0001-Link-XrdSecztn-to-XrdUtils.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
@@ -36,6 +38,7 @@ requirements:
     - krb5
     - zlib
     - ncurses
+    - scitokens-cpp
   run:
     - openssl
     - python
