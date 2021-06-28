@@ -1,0 +1,25 @@
+From 3ad222cd6593b40448eb67bd62333b3c9a80aa31 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Mon, 28 Jun 2021 10:08:59 +0200
+Subject: [PATCH] Link XrdSecztn to XrdUtils
+
+---
+ src/XrdSecztn.cmake | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/XrdSecztn.cmake b/src/XrdSecztn.cmake
+index e72d5c500..23403bcf8 100644
+--- a/src/XrdSecztn.cmake
++++ b/src/XrdSecztn.cmake
+@@ -14,7 +14,7 @@ add_library(
+ 
+ target_link_libraries(
+   ${LIB_XRD_SEC_ZTN}
+-# XrdUtils
++  XrdUtils
+   )
+ 
+ set_target_properties(
+-- 
+2.29.2
+
