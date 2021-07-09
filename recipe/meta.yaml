@@ -8,8 +8,6 @@ package:
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
   sha256: 8e0f797474d609bfe909a30dba6889580b55b3202661e6c632c7b6676929fb43
-  patches:
-    - patches/0001-Link-XrdSecztn-to-XrdUtils.patch
 
 build:
   number: 0
