@@ -23,7 +23,7 @@ krb5:
 libcurl:
 - '7'
 libuuid:
-- 2.32.1
+- '2'
 libxml2:
 - '2.9'
 ncurses:
@@ -41,8 +41,6 @@ pin_run_as_build:
     max_pin: x.x
   ncurses:
     max_pin: x.x
-  openssl:
-    max_pin: x.x.x
   python:
     min_pin: x.x
     max_pin: x.x
