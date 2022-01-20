@@ -6,7 +6,6 @@ cp "${RECIPE_DIR}/FindLibUUID.cmake" cmake/FindLibUuid.cmake
 mkdir build-dir
 cd build-dir
 
-perl -0pi -e 's/(target_link_libraries\([\s]+xrdpfc_print)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdFileCache.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdadler32)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdmapc)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
 perl -0pi -e 's/(target_link_libraries\([\s]+xrdqstats)/\1 \${LIBXML2_LIBRARIES}/smg' ../src/XrdApps.cmake
@@ -18,6 +17,10 @@ if [ "$(uname)" == "Linux" ]; then
     extra_cmake_args="-DCMAKE_AR=${GCC_AR}"
 else
     extra_cmake_args=""
+fi
+
+if [ "${openssl}" == 3 ]; then
+    extra_cmake_args="${extra_cmake_args} -DWITH_OPENSSL3=TRUE"
 fi
 
 cmake ${CMAKE_ARGS} \
