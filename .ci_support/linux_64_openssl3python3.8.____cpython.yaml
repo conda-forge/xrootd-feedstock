@@ -27,20 +27,8 @@ ncurses:
 openssl:
 - '3'
 pin_run_as_build:
-  krb5:
-    max_pin: x.x
-  libcurl:
-    max_pin: x
-  libuuid:
-    max_pin: x
-  libxml2:
-    max_pin: x.x
   python:
     min_pin: x.x
-    max_pin: x.x
-  readline:
-    max_pin: x
-  zlib:
     max_pin: x.x
 python:
 - 3.8.* *_cpython
