@@ -46,10 +46,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_64_openssl1.1.1python3.7.____cpython</td>
+              <td>linux_64_openssl1.1.1python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_64_openssl1.1.1python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_64_openssl1.1.1python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -88,10 +88,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_64_openssl3python3.7.____cpython</td>
+              <td>linux_64_openssl3python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_64_openssl3python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_64_openssl3python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -130,10 +130,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_aarch64_openssl1.1.1python3.7.____cpython</td>
+              <td>linux_aarch64_openssl1.1.1python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_aarch64_openssl1.1.1python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_aarch64_openssl1.1.1python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -172,10 +172,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_aarch64_openssl3python3.7.____cpython</td>
+              <td>linux_aarch64_openssl3python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_aarch64_openssl3python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_aarch64_openssl3python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -214,10 +214,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_ppc64le_openssl1.1.1python3.7.____cpython</td>
+              <td>linux_ppc64le_openssl1.1.1python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_ppc64le_openssl1.1.1python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_ppc64le_openssl1.1.1python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -256,10 +256,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_ppc64le_openssl3python3.7.____cpython</td>
+              <td>linux_ppc64le_openssl3python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_ppc64le_openssl3python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=linux&configuration=linux_ppc64le_openssl3python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -298,10 +298,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>osx_64_openssl1.1.1python3.7.____cpython</td>
+              <td>osx_64_openssl1.1.1python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_64_openssl1.1.1python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_64_openssl1.1.1python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -340,10 +340,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>osx_64_openssl3python3.7.____cpython</td>
+              <td>osx_64_openssl3python3.11.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_64_openssl3python3.7.____cpython" alt="variant">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_64_openssl3python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -382,6 +382,13 @@ Current build status
                 </a>
               </td>
             </tr><tr>
+              <td>osx_arm64_openssl1.1.1python3.11.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_arm64_openssl1.1.1python3.11.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
               <td>osx_arm64_openssl1.1.1python3.8.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
@@ -400,6 +407,13 @@ Current build status
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_arm64_openssl3python3.10.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_arm64_openssl3python3.11.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=2622&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/xrootd-feedstock?branchName=main&jobName=osx&configuration=osx_arm64_openssl3python3.11.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
