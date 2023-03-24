@@ -1,11 +1,11 @@
-About xrootd
-============
+About xrootd-feedstock
+======================
+
+Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/xrootd-feedstock/blob/main/LICENSE.txt)
 
 Home: http://xrootd.org/
 
 Package license: LGPL-3.0-or-later
-
-Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/xrootd-feedstock/blob/main/LICENSE.txt)
 
 Summary: High performance, scalable fault tolerant access to data
 
