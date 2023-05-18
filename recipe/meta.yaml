@@ -10,7 +10,7 @@ source:
   sha256: 06dcb6c9a4601c5a66329bf308fc7e85f49a55e03e9dd68b809d89f2773ee790
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
