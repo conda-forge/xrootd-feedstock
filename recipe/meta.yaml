@@ -1,5 +1,5 @@
 {% set name = "xrootd" %}
-{% set version = "5.5.5" %}
+{% set version = "5.6.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: 4bbdeb3fc3febf042055e618e0e1451f2b487c51900d43c40e0430b3e20cb30e
+  sha256: 768954ebe4102db6987fdf3a9c06fc5b2bacdfbc9ab40ccd845aac5376359138
 
 build:
-  number: 1
+  number: 0
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
