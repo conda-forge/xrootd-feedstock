@@ -13,7 +13,7 @@ cxx_compiler:
 cxx_compiler_version:
 - '15'
 krb5:
-- '1.20'
+- '1.21'
 libcurl:
 - '8'
 libxml2:
