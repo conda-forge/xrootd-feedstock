@@ -36,4 +36,4 @@ cmake ${CMAKE_ARGS} \
 
 make -j${CPU_COUNT} # VERBOSE=1
 
-make install
+make install VERBOSE=1
