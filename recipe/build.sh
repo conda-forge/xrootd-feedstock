@@ -31,6 +31,7 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
     -DCMAKE_CXX_COMPILER="${GXX}" \
     -DCMAKE_C_COMPILER="${GCC}" \
+    -DPIP_OPTIONS="--use-pep517 -vvv" \
     ${extra_cmake_args} \
     ..
 
