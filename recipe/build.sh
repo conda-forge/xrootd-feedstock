@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-cp "${RECIPE_DIR}/FindLibUUID.cmake" cmake/FindLibUuid.cmake
-
 mkdir build-dir
 cd build-dir
 
@@ -24,18 +22,18 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_INSTALL_LIBDIR="${PREFIX}/lib" \
-    -DPYTHON_EXECUTABLE="${PYTHON}" \
-    -DPYTHON_INCLUDE_DIR="${PREFIX}/include" \
-    -DPYTHON_LIBRARY="$PREFIX/lib/libpython${PY_VER}.so" \
+    -DPython_EXECUTABLE="${PYTHON}" \
+    -DPython_INCLUDE_DIR="$("${PYTHON}" -c "from sysconfig import get_paths as gp; print(gp()['include'])")" \
     -DCMAKE_PREFIX_PATH="${PREFIX}" \
     -DCMAKE_INSTALL_RPATH="${PREFIX}/lib" \
     -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
     -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=ON \
     -DCMAKE_CXX_COMPILER="${GXX}" \
     -DCMAKE_C_COMPILER="${GCC}" \
+    -DPIP_OPTIONS="--use-pep517 -vvv" \
     ${extra_cmake_args} \
     ..
 
 make -j${CPU_COUNT} # VERBOSE=1
 
-make install
+make install VERBOSE=1
