@@ -23,8 +23,7 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_INSTALL_LIBDIR="${PREFIX}/lib" \
     -DPython_EXECUTABLE="${PYTHON}" \
-    -DPYTHON_INCLUDE_DIR="${PREFIX}/include" \
-    -DPYTHON_LIBRARY="$PREFIX/lib/libpython${PY_VER}.so" \
+    -DPython_INCLUDE_DIR="$("${PYTHON}" -c "from sysconfig import get_paths as gp; print(gp()['include'])")" \
     -DCMAKE_PREFIX_PATH="${PREFIX}" \
     -DCMAKE_INSTALL_RPATH="${PREFIX}/lib" \
     -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
