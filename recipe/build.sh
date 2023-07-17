@@ -22,7 +22,7 @@ cmake ${CMAKE_ARGS} \
     -DCMAKE_BUILD_TYPE=release \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
     -DCMAKE_INSTALL_LIBDIR="${PREFIX}/lib" \
-    -DPYTHON_EXECUTABLE="${PYTHON}" \
+    -DPython_EXECUTABLE="${PYTHON}" \
     -DPYTHON_INCLUDE_DIR="${PREFIX}/include" \
     -DPYTHON_LIBRARY="$PREFIX/lib/libpython${PY_VER}.so" \
     -DCMAKE_PREFIX_PATH="${PREFIX}" \
