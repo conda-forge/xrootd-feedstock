@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v{{ version }}.tar.gz
-  sha256: d75e4c2c6444eac45057f453c00d5c26b952ce6c2ca1fd0e320969562e44f821
+  sha256: 484645e5310ddf66d267a7025e03c348acbedd11310c8f6101f893dea67ce799
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
   run_exports:
     # https://abi-laboratory.pro/tracker/timeline/xrootd/
