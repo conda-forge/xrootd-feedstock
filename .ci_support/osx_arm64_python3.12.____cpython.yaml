@@ -3,21 +3,21 @@ MACOSX_DEPLOYMENT_TARGET:
 c_compiler:
 - clang
 c_compiler_version:
-- '15'
+- '16'
 channel_sources:
-- conda-forge/label/python_rc,conda-forge
+- conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
 - clangxx
 cxx_compiler_version:
-- '15'
+- '16'
 krb5:
 - '1.21'
 libcurl:
 - '8'
 libxml2:
-- '2.11'
+- '2.12'
 macos_machine:
 - arm64-apple-darwin20.0.0
 ncurses:
@@ -37,7 +37,5 @@ target_platform:
 zip_keys:
 - - c_compiler_version
   - cxx_compiler_version
-- - python
-  - channel_sources
 zlib:
 - '1.2'
