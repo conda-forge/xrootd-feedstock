@@ -41,6 +41,7 @@ requirements:
     - zlib
     - ncurses
     - scitokens-cpp
+    - libxcrypt
   run:
     - openssl
     - python
