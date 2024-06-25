@@ -1,3 +1,2 @@
-c_stdlib_version:              # [unix and x86_64]
+c_stdlib_version:              # [linux and x86_64]
   - 2.12                       # [linux and x86_64]
-  - 10.12                      # [osx and x86_64]
