@@ -1,0 +1,32 @@
+From ee778b3d08b4bd35c8cde72a9d2b5d1236cd4536 Mon Sep 17 00:00:00 2001
+From: Christophe Haen <christophe.haen@cern.ch>
+Date: Fri, 28 Feb 2025 11:56:06 +0100
+Subject: [PATCH] TMP: remove setrlimit
+
+---
+ src/Xrd/XrdScheduler.cc | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/Xrd/XrdScheduler.cc b/src/Xrd/XrdScheduler.cc
+index 75925a945..53410fe1f 100644
+--- a/src/Xrd/XrdScheduler.cc
++++ b/src/Xrd/XrdScheduler.cc
+@@ -191,11 +191,13 @@ void XrdScheduler::Boot(XrdSysError *eP, XrdSysTrace *tP,
+    if (!getrlimit(RLIMIT_NPROC, &rlim))
+       {if (rlim.rlim_max == RLIM_INFINITY || rlim.rlim_max > theMax)
+           {rlim.rlim_cur = theMax;
+-           setrlimit(RLIMIT_NPROC, &rlim);
++	   // CHRIS
++           // setrlimit(RLIMIT_NPROC, &rlim);
+           } else {
+            if (rlim.rlim_cur != rlim.rlim_max)
+               {rlim.rlim_cur = rlim.rlim_max;
+-               setrlimit(RLIMIT_NPROC, &rlim);
++	       // CHRIS
++               // setrlimit(RLIMIT_NPROC, &rlim);
+               }
+           }
+       }
+-- 
+2.48.1
+
