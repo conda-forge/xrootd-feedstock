@@ -4,7 +4,7 @@
 
 [project]
 name = "xrootd-feedstock"
-version = "3.45.4"
+version = "3.46.0"
 description = "Pixi configuration for conda-forge/xrootd-feedstock"
 authors = ["@conda-forge/xrootd"]
 channels = ["conda-forge"]
