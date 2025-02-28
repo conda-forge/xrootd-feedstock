@@ -20,7 +20,6 @@ allows the deployment of data access clusters of virtually any size, which
 can include sophisticated features, like authentication/authorization,
 integrations with other systems, WAN data distribution, etc.
 
-
 Current build status
 ====================
 
