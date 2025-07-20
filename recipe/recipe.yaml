@@ -11,13 +11,13 @@ package:
 source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
   sha256: 3ceca2064b521523c9c4456767f10f3251bdcd819b7c55f1a47132067fa3394f
+  patches:
+    - if: unix
+      then: patches/drop-Werror-null-dereference.patch
 
 build:
   number: 0
   skip: win
-  script:
-    env:
-      CXXFLAGS: "-Wall"
 
 requirements:
   build:
