@@ -17,7 +17,7 @@ build:
   skip: win
   script:
     env:
-      CXXFLAGS: "-Wall"  # [linux]
+      CXXFLAGS: "-Wall"
 
 requirements:
   build:
