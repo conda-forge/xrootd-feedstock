@@ -1,0 +1,10 @@
+--- a/cmake/XRootDOSDefs.cmake
++++ b/cmake/XRootDOSDefs.cmake
+@@ -35,7 +35,6 @@
+   -Wall
+   -Wextra
+   $<$<NOT:$<BOOL:${APPLE}>>:-Wdeprecated>
+-  -Werror=null-dereference
+   -Wno-unused-parameter
+   -Wno-vla
+ )

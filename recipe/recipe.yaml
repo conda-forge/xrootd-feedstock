@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: xrootd
-  version: "5.8.1"
+  version: "5.8.2"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,10 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
-  sha256: a8b4d6d8aa9cc2cba6e77a3f14deea9372de9be6fec2b1949ddf81bfb8aa4092
+  sha256: 3ceca2064b521523c9c4456767f10f3251bdcd819b7c55f1a47132067fa3394f
+  patches:
+    - if: unix
+      then: patches/drop-Werror-null-dereference.patch
 
 build:
   number: 0
