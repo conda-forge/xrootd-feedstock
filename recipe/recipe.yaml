@@ -16,7 +16,7 @@ source:
       then: patches/drop-Werror-null-dereference.patch
 
 build:
-  number: 0
+  number: 1
   skip: win
 
 requirements:
