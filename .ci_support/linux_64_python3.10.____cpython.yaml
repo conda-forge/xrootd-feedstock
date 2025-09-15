@@ -24,8 +24,8 @@ libcurl:
 - '8'
 libuuid:
 - '2'
-libxml2:
-- '2.13'
+libxml2_devel:
+- '2.14'
 ncurses:
 - '6'
 openssl:
