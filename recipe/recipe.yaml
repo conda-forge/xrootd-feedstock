@@ -16,7 +16,7 @@ source:
       then: patches/drop-Werror-null-dereference.patch
 
 build:
-  number: 0
+  number: 1
   skip: win
 
 requirements:
@@ -39,7 +39,7 @@ requirements:
     - setuptools
     - pip
     - readline
-    - libxml2
+    - libxml2-devel
     - if: not osx
       then: libuuid
     - libcurl
@@ -52,7 +52,7 @@ requirements:
     - openssl
     - python
     - readline
-    - libxml2
+    - libxml2-devel
     - krb5
     - zlib
     - ncurses

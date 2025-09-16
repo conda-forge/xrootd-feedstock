@@ -17,15 +17,15 @@ cxx_compiler:
 cxx_compiler_version:
 - '14'
 docker_image:
-- quay.io/condaforge/linux-anvil-x86_64:cos7
+- quay.io/condaforge/linux-anvil-x86_64:alma9
 krb5:
 - '1.21'
 libcurl:
 - '8'
 libuuid:
 - '2'
-libxml2:
-- '2.13'
+libxml2_devel:
+- '2.14'
 ncurses:
 - '6'
 openssl:
