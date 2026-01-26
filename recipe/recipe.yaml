@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: xrootd
-  version: "5.9.0"
+  version: "5.9.1"
 
 package:
   name: ${{ name|lower }}
@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
-  sha256: 39eed9976f141e869eba721f41f61a3dadae15b17a49d6432725df2e45ef6d5f
+  sha256: d26d77a676674f52cdb5997b71eb6414d68e8e3067ce7a2201dc4d660b29e498
 
 build:
   number: 0
