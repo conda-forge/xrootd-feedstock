@@ -4,8 +4,8 @@ context:
   name: xrootd
   version: "6.0.3"
 
-package:
-  name: ${{ name|lower }}
+recipe:
+  name: xrootd-split
   version: ${{ version }}
 
 source:
@@ -18,51 +18,139 @@ build:
   number: 0
   skip: win
 
-requirements:
-  build:
-    - if: build_platform != target_platform
-      then:
-        - python
-        - cross-python_${{ target_platform }}
-        - setuptools
-        - pip
-    - ${{ compiler('c') }}
-    - ${{ compiler('cxx') }}
-    - ${{ stdlib("c") }}
-    - cmake
-    - make
-    - pkg-config
-  host:
-    - openssl
-    - python
-    - setuptools
-    - pip
-    - readline
-    - libxml2-devel
-    - if: not osx
-      then: libuuid
-    - libcurl
-    - krb5
-    - zlib
-    - ncurses
-    - scitokens-cpp
-    - libxcrypt
-  run:
-    - openssl
-    - python
-    - readline
-    - libxml2-devel
-    - krb5
-    - zlib
-    - ncurses
-  run_exports:
-    - ${{ pin_subpackage('xrootd', upper_bound='x') }}
+outputs:
+  # Build the C++ core once per job with the Python bindings disabled. The
+  # bindings are built separately (see the "xrootd" output below) against the
+  # installed libraries, which avoids find_package(Python) running in the
+  # cross-compiled main build (CMake >= 4.1, policy CMP0190).
+  - staging:
+      name: xrootd-build
+    build:
+      script:
+        file: build_core.sh
+    requirements:
+      build:
+        - ${{ compiler('c') }}
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib("c") }}
+        - cmake
+        - make
+        - pkg-config
+      host:
+        - openssl
+        - readline
+        - libxml2-devel
+        - if: not osx
+          then: libuuid
+        - libcurl
+        - krb5
+        - zlib
+        - ncurses
+        - scitokens-cpp
+        - libxcrypt
 
-tests:
-  - python:
-      imports:
-        - XRootD.client
-        - pyxrootd
+  - package:
+      name: libxrootd
+    inherit: xrootd-build
+    build:
+      files:
+        # versioned shared libraries (linux / macOS)
+        - lib/libXrd*.so.*
+        - lib/libXrd*.*.dylib
+        # runtime-loaded plugins (named libXrd<Name>-<major>.so on both platforms)
+        - lib/libXrd*-*.so
+    requirements:
+      run_exports:
+        - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+    about:
+      summary: XRootD shared libraries and plugins
+
+  - package:
+      name: libxrootd-devel
+    inherit:
+      from: xrootd-build
+      run_exports: false
+    build:
+      files:
+        include:
+          - include/xrootd/**
+          - lib/cmake/**
+          - bin/xrootd-config
+          # unversioned development symlinks
+          - lib/libXrd*.so
+          - lib/libXrd*.dylib
+        exclude:
+          # plugins and versioned libraries belong to libxrootd
+          - lib/libXrd*-*.so
+          - lib/libXrd*.*.dylib
+    requirements:
+      run:
+        - ${{ pin_subpackage('libxrootd', exact=True) }}
+    tests:
+      - script:
+          - test -f "${PREFIX}/include/xrootd/XrdVersion.hh"
+          - test -f "${PREFIX}/lib/cmake/XRootD/XRootDConfig.cmake"
+    about:
+      summary: Development files (headers, CMake config) for XRootD
+
+  - package:
+      name: xrootd-cli
+    inherit: xrootd-build
+    build:
+      files:
+        include:
+          - bin/**
+          - share/**
+        exclude:
+          - bin/xrootd-config
+    requirements:
+      run:
+        - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+    tests:
+      - script:
+          - xrdcp --version
+    about:
+      summary: XRootD command line tools and server binaries
+
+  - package:
+      name: xrootd
+    inherit: xrootd-build
+    build:
+      script:
+        file: install_python.sh
+    requirements:
+      build:
+        - if: build_platform != target_platform
+          then:
+            - python
+            - cross-python_${{ target_platform }}
+            - setuptools
+            - pip
+        - ${{ compiler('c') }}
+        - ${{ compiler('cxx') }}
+        - ${{ stdlib("c") }}
+        - cmake
+        - make
+      host:
+        - python
+        - pip
+        - setuptools
+        - ${{ pin_subpackage('libxrootd-devel', exact=True) }}
+      run:
+        - python
+        - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+        - ${{ pin_subpackage('xrootd-cli', exact=True) }}
+      run_exports:
+        # Downstream recipes that host-depend on "xrootd" keep getting a
+        # correct pin on the shared libraries.
+        - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+    tests:
+      - python:
+          imports:
+            - XRootD.client
+            - pyxrootd
+    about:
+      summary: Python bindings for XRootD
 
 about:
   license: LGPL-3.0-or-later
@@ -81,5 +169,6 @@ about:
   repository: https://github.com/xrootd/xrootd
 
 extra:
+  feedstock-name: xrootd
   recipe-maintainers:
     - chrisburr
