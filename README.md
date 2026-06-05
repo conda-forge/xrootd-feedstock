@@ -44,6 +44,26 @@ allows the deployment of data access clusters of virtually any size, which
 can include sophisticated features, like authentication/authorization,
 integrations with other systems, WAN data distribution, etc.
 
+About python-xrootd
+-------------------
+
+Home: http://xrootd.org/
+
+Package license: LGPL-3.0-or-later
+
+Summary: Python bindings for XRootD
+
+Development: https://github.com/xrootd/xrootd
+
+The XROOTD project aims at giving high performance, scalable fault tolerant
+access to data repositories of many kinds. The typical usage is to give
+access to file-based ones. It is based on a scalable architecture, a
+communication protocol, and a set of plugins and tools based on those. The
+freedom to configure it and to make it scale (for size and performance)
+allows the deployment of data access clusters of virtually any size, which
+can include sophisticated features, like authentication/authorization,
+integrations with other systems, WAN data distribution, etc.
+
 About xrootd
 ------------
 
@@ -51,7 +71,7 @@ Home: http://xrootd.org/
 
 Package license: LGPL-3.0-or-later
 
-Summary: Python bindings for XRootD
+Summary: Metapackage installing all XRootD components (libraries, headers, CLI tools, Python bindings)
 
 Development: https://github.com/xrootd/xrootd
 
@@ -137,6 +157,7 @@ Current release info
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-libxrootd-green.svg)](https://anaconda.org/conda-forge/libxrootd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libxrootd.svg)](https://anaconda.org/conda-forge/libxrootd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libxrootd.svg)](https://anaconda.org/conda-forge/libxrootd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libxrootd.svg)](https://anaconda.org/conda-forge/libxrootd) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-libxrootd--devel-green.svg)](https://anaconda.org/conda-forge/libxrootd-devel) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/libxrootd-devel.svg)](https://anaconda.org/conda-forge/libxrootd-devel) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/libxrootd-devel.svg)](https://anaconda.org/conda-forge/libxrootd-devel) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/libxrootd-devel.svg)](https://anaconda.org/conda-forge/libxrootd-devel) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-python--xrootd-green.svg)](https://anaconda.org/conda-forge/python-xrootd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/python-xrootd.svg)](https://anaconda.org/conda-forge/python-xrootd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/python-xrootd.svg)](https://anaconda.org/conda-forge/python-xrootd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/python-xrootd.svg)](https://anaconda.org/conda-forge/python-xrootd) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-xrootd-green.svg)](https://anaconda.org/conda-forge/xrootd) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/xrootd.svg)](https://anaconda.org/conda-forge/xrootd) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/xrootd.svg)](https://anaconda.org/conda-forge/xrootd) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/xrootd.svg)](https://anaconda.org/conda-forge/xrootd) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-xrootd--cli-green.svg)](https://anaconda.org/conda-forge/xrootd-cli) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/xrootd-cli.svg)](https://anaconda.org/conda-forge/xrootd-cli) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/xrootd-cli.svg)](https://anaconda.org/conda-forge/xrootd-cli) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/xrootd-cli.svg)](https://anaconda.org/conda-forge/xrootd-cli) |
 
@@ -150,16 +171,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `libxrootd, libxrootd-devel, xrootd, xrootd-cli` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `libxrootd, libxrootd-devel, python-xrootd, xrootd, xrootd-cli` can be installed with `conda`:
 
 ```
-conda install libxrootd libxrootd-devel xrootd xrootd-cli
+conda install libxrootd libxrootd-devel python-xrootd xrootd xrootd-cli
 ```
 
 or with `mamba`:
 
 ```
-mamba install libxrootd libxrootd-devel xrootd xrootd-cli
+mamba install libxrootd libxrootd-devel python-xrootd xrootd xrootd-cli
 ```
 
 It is possible to list all of the versions of `libxrootd` available on your platform with `conda`:
