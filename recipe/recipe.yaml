@@ -62,6 +62,16 @@ outputs:
     requirements:
       run_exports:
         - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+    tests:
+      - package_contents:
+          strict: true
+          lib:
+            # key client library, plus all other shared libraries
+            - XrdCl
+            - Xrd*
+          files:
+            # runtime-loaded plugins use a .so suffix on both Linux and macOS
+            - lib/libXrd*-*.so
     about:
       summary: XRootD shared libraries and plugins
 
@@ -87,9 +97,26 @@ outputs:
       run:
         - ${{ pin_subpackage('libxrootd', exact=True) }}
     tests:
-      - script:
-          - test -f "${PREFIX}/include/xrootd/XrdVersion.hh"
-          - test -f "${PREFIX}/lib/cmake/XRootD/XRootDConfig.cmake"
+      - package_contents:
+          strict: true
+          include:
+            - xrootd/XrdVersion.hh
+            - xrootd/**
+          bin:
+            - xrootd-config
+          # unversioned development symlinks (lib matches .so / .dylib)
+          lib:
+            - XrdCl
+            - Xrd*
+          files:
+            exists:
+              - lib/cmake/XRootD/XRootDConfig.cmake
+              - lib/cmake/XRootD/*.cmake
+            not_exists:
+              # plugins and versioned libraries belong to libxrootd
+              - lib/libXrd*-*.so
+              - lib/libXrd*.so.*
+              - lib/libXrd*.*.dylib
     about:
       summary: Development files (headers, CMake config) for XRootD
 
@@ -109,6 +136,22 @@ outputs:
     tests:
       - script:
           - xrdcp --version
+      - package_contents:
+          strict: true
+          bin:
+            exists:
+              # key tools by name, plus everything else for strict coverage
+              - xrootd
+              - cmsd
+              - xrdcp
+              - xrdfs
+              - "*"
+            not_exists:
+              # belongs to libxrootd-devel
+              - xrootd-config
+          files:
+            - share/man/man*/*
+            - share/xrootd/utils/*
     about:
       summary: XRootD command line tools and server binaries
 
@@ -118,6 +161,9 @@ outputs:
     build:
       script:
         file: install_python.sh
+      files:
+        # only ship the Python bindings; bin/ and share/ belong to xrootd-cli
+        - lib/python*/site-packages/**
     requirements:
       build:
         - if: build_platform != target_platform
@@ -149,6 +195,16 @@ outputs:
           imports:
             - XRootD.client
             - pyxrootd
+      - package_contents:
+          strict: true
+          site_packages:
+            - XRootD.client
+            - pyxrootd
+          files:
+            # strict coverage for compiled extension, __pycache__, dist-info, ...
+            - lib/python*/site-packages/XRootD/**
+            - lib/python*/site-packages/pyxrootd/**
+            - lib/python*/site-packages/xrootd-*.dist-info/**
     about:
       summary: Python bindings for XRootD
 
