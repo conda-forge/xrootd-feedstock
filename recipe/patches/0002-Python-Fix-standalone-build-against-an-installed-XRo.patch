@@ -1,0 +1,95 @@
+From 80fa6914f99fc420aeb96c0bdd1414d12a189927 Mon Sep 17 00:00:00 2001
+From: Chris Burr <christopher.burr@cern.ch>
+Date: Thu, 4 Jun 2026 15:14:32 +0200
+Subject: [PATCH] [Python] Fix standalone build against an installed XRootD
+
+PyXRootDAdler32.cc includes XrdCks/XrdCksXAttr.hh and XrdOuc/XrdOucXAttr.hh
+(which in turn includes XrdSys/XrdSysFAttr.hh), none of which were installed
+by 'make install'. This broke the fallback in python/src/CMakeLists.txt that
+allows building the Python bindings against a pre-installed XRootD, since
+the bindings could no longer be compiled without the full source tree.
+
+Install the three headers into the private include tree, which the Python
+bindings already use for XrdCl private headers, and install XrdCksData.hh
+(included by XrdCksXAttr.hh) unconditionally since the XrdCks code is built
+into libXrdUtils even for client-only builds. Also link XrdUtils explicitly,
+as the bindings depend on XrdSysFAttr from libXrdUtils, which until now was
+only resolved transitively through libXrdCl.
+---
+ python/src/CMakeLists.txt | 10 ++++++++--
+ src/XrdHeaders.cmake      |  5 ++++-
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/python/src/CMakeLists.txt b/python/src/CMakeLists.txt
+index 2f15ae8eb..eef93107b 100644
+--- a/python/src/CMakeLists.txt
++++ b/python/src/CMakeLists.txt
+@@ -36,7 +36,7 @@ endif()
+ # variables when building the module as part of a standard CMake build.
+ 
+ if(TARGET XrdCl)
+-  target_link_libraries(client PRIVATE XrdCl)
++  target_link_libraries(client PRIVATE XrdCl XrdUtils)
+ else()
+   find_library(XRootD_CLIENT_LIBRARY NAMES XrdCl)
+ 
+@@ -44,6 +44,12 @@ else()
+     message(FATAL_ERROR "Could not find XRootD client library")
+   endif()
+ 
++  find_library(XRootD_UTILS_LIBRARY NAMES XrdUtils)
++
++  if(NOT XRootD_UTILS_LIBRARY)
++    message(FATAL_ERROR "Could not find XRootD utils library")
++  endif()
++
+   find_path(XRootD_INCLUDE_DIR XrdVersion.hh PATH_SUFFIXES include/xrootd)
+ 
+   if(NOT XRootD_INCLUDE_DIR)
+@@ -54,6 +60,6 @@ else()
+   # extra include for it to allow building the Python bindings against
+   # a pre-installed XRootD.
+ 
+-  target_link_libraries(client PRIVATE ${XRootD_CLIENT_LIBRARY})
++  target_link_libraries(client PRIVATE ${XRootD_CLIENT_LIBRARY} ${XRootD_UTILS_LIBRARY})
+   target_include_directories(client PRIVATE ${XRootD_INCLUDE_DIR} ${XRootD_INCLUDE_DIR}/private)
+ endif()
+diff --git a/src/XrdHeaders.cmake b/src/XrdHeaders.cmake
+index 600632032..a9bd2f1ea 100644
+--- a/src/XrdHeaders.cmake
++++ b/src/XrdHeaders.cmake
+@@ -33,6 +33,7 @@ set( XROOTD_PUBLIC_HEADERS
+   XrdNet/XrdNetPMark.hh
+   XrdNet/XrdNetSockAddr.hh
+   XrdNet/XrdNetSocket.hh
++  XrdCks/XrdCksData.hh
+   XrdOuc/XrdOucBuffer.hh
+   XrdOuc/XrdOucCRC.hh
+   XrdOuc/XrdOucCache.hh
+@@ -109,7 +110,6 @@ if( NOT XRDCL_ONLY )
+     XrdCks/XrdCks.hh
+     XrdCks/XrdCksAssist.hh
+     XrdCks/XrdCksCalc.hh
+-    XrdCks/XrdCksData.hh
+     XrdCks/XrdCksManager.hh
+     XrdCks/XrdCksWrapper.hh
+     XrdCms/XrdCmsClient.hh
+@@ -139,12 +139,15 @@ endif()
+ set( XROOTD_PRIVATE_HEADERS
+   Xrd/XrdPoll.hh
+   Xrd/XrdSendQ.hh
++  XrdCks/XrdCksXAttr.hh
+   XrdNet/XrdNetPeer.hh
+   XrdNet/XrdNetBuffer.hh
+   XrdNet/XrdNetIF.hh
+   XrdSecsss/XrdSecsssID.hh
++  XrdSys/XrdSysFAttr.hh
+   XrdSys/XrdSysPriv.hh
+   XrdOuc/XrdOucCRC32C.hh
++  XrdOuc/XrdOucXAttr.hh
+   XrdOuc/XrdOucExport.hh
+   XrdOuc/XrdOucGatherConf.hh
+   XrdOuc/XrdOucPList.hh
+-- 
+2.53.0
+
