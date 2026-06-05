@@ -20,9 +20,9 @@ build:
 
 outputs:
   # Build the C++ core once per job with the Python bindings disabled. The
-  # bindings are built separately (see the "xrootd" output below) against the
-  # installed libraries, which avoids find_package(Python) running in the
-  # cross-compiled main build (CMake >= 4.1, policy CMP0190).
+  # bindings are built separately (see the "python-xrootd" output below)
+  # against the installed libraries, which avoids find_package(Python) running
+  # in the cross-compiled main build (CMake >= 4.1, policy CMP0190).
   - staging:
       name: xrootd-build
     build:
@@ -66,7 +66,6 @@ outputs:
       - package_contents:
           strict: true
           lib:
-            # key client library, plus all other shared libraries
             - XrdCl
             - Xrd*
           files:
@@ -104,7 +103,6 @@ outputs:
             - xrootd/**
           bin:
             - xrootd-config
-          # unversioned development symlinks (lib matches .so / .dylib)
           lib:
             - XrdCl
             - Xrd*
@@ -113,7 +111,6 @@ outputs:
               - lib/cmake/XRootD/XRootDConfig.cmake
               - lib/cmake/XRootD/*.cmake
             not_exists:
-              # plugins and versioned libraries belong to libxrootd
               - lib/libXrd*-*.so
               - lib/libXrd*.so.*
               - lib/libXrd*.*.dylib
@@ -140,14 +137,12 @@ outputs:
           strict: true
           bin:
             exists:
-              # key tools by name, plus everything else for strict coverage
               - xrootd
               - cmsd
               - xrdcp
               - xrdfs
               - "*"
             not_exists:
-              # belongs to libxrootd-devel
               - xrootd-config
           files:
             - share/man/man*/*
@@ -156,13 +151,12 @@ outputs:
       summary: XRootD command line tools and server binaries
 
   - package:
-      name: xrootd
+      name: python-xrootd
     inherit: xrootd-build
     build:
       script:
         file: install_python.sh
       files:
-        # only ship the Python bindings; bin/ and share/ belong to xrootd-cli
         - lib/python*/site-packages/**
     requirements:
       build:
@@ -185,10 +179,7 @@ outputs:
       run:
         - python
         - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
-        - ${{ pin_subpackage('xrootd-cli', exact=True) }}
       run_exports:
-        # Downstream recipes that host-depend on "xrootd" keep getting a
-        # correct pin on the shared libraries.
         - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
     tests:
       - python:
@@ -201,12 +192,33 @@ outputs:
             - XRootD.client
             - pyxrootd
           files:
-            # strict coverage for compiled extension, __pycache__, dist-info, ...
             - lib/python*/site-packages/XRootD/**
             - lib/python*/site-packages/pyxrootd/**
             - lib/python*/site-packages/xrootd-*.dist-info/**
     about:
       summary: Python bindings for XRootD
+
+  # Metapackage matching the old monolithic "xrootd" package
+  - package:
+      name: xrootd
+    requirements:
+      run:
+        - ${{ pin_subpackage('libxrootd', exact=True) }}
+        - ${{ pin_subpackage('libxrootd-devel', exact=True) }}
+        - ${{ pin_subpackage('xrootd-cli', exact=True) }}
+        - ${{ pin_subpackage('python-xrootd', exact=True) }}
+      run_exports:
+        - ${{ pin_subpackage('libxrootd', upper_bound='x') }}
+    tests:
+      - python:
+          imports:
+            - XRootD.client
+            - pyxrootd
+      - script:
+          - xrdcp --version
+          - test -f "${PREFIX}/include/xrootd/XrdVersion.hh"
+    about:
+      summary: Metapackage installing all XRootD components (libraries, headers, CLI tools, Python bindings)
 
 about:
   license: LGPL-3.0-or-later
