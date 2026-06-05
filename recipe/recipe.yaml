@@ -12,7 +12,7 @@ source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
   sha256: 431db0f59ee4048f27718cd8fc8f1ab49247a177f59d30dc7525913693c3f163
   patches:
-    - patches/0001-Fix-cross-compilation-CMP0190.patch
+    - patches/0001-Python-Fix-standalone-build-against-an-installed-XRo.patch
 
 build:
   number: 0
