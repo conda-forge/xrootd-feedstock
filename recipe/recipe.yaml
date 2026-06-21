@@ -13,7 +13,6 @@ source:
   sha256: 44e45588f22edf523e15e47c3b7ddcb88a7dff6ba4f2afa5f3aac878f2ad3f90
   patches:
     - patches/0001-Fix-cross-compilation-CMP0190.patch
-    - patches/0002-Python-Fix-standalone-build-against-an-installed-XRo.patch
 
 build:
   number: 0
