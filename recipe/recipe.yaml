@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: xrootd
-  version: "6.0.3"
+  version: "6.1.0"
 
 recipe:
   name: xrootd-split
@@ -10,10 +10,9 @@ recipe:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
-  sha256: 431db0f59ee4048f27718cd8fc8f1ab49247a177f59d30dc7525913693c3f163
+  sha256: 44e45588f22edf523e15e47c3b7ddcb88a7dff6ba4f2afa5f3aac878f2ad3f90
   patches:
     - patches/0001-Fix-cross-compilation-CMP0190.patch
-    - patches/0002-Python-Fix-standalone-build-against-an-installed-XRo.patch
 
 build:
   number: 0
