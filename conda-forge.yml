@@ -1,11 +1,9 @@
 bot:
   abi_migration_branches:
-  - v5.x
+    - v5.x
   automerge: true
 build_platform:
-  linux_aarch64: linux_aarch64
   linux_ppc64le: linux_64
-  osx_arm64: osx_arm64
 conda_build:
   pkg_format: '2'
 conda_build_tool: rattler-build
