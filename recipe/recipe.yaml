@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: xrootd
-  version: "6.2.0"
+  version: "6.2.1"
 
 recipe:
   name: xrootd-split
@@ -10,7 +10,7 @@ recipe:
 
 source:
   url: https://github.com/xrootd/xrootd/archive/v${{ version }}.tar.gz
-  sha256: 80edfb6884b29af553f4e81ea111a3f7f2b7e0fe9e2ed54de8f1e7da4fb702f2
+  sha256: c5aefa462b17fac4dd7f2002acc5cac77c452209f5aaf3ea7418dbcaec6f37e5
   patches:
     - patches/0001-Fix-cross-compilation-CMP0190.patch
 
